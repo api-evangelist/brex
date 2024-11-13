@@ -1,0 +1,26 @@
+aid: brex
+name: Brex
+description: 'The budgets API lets you manage your Brex Budgets and Spend Limits. '
+type: Index
+position: Consumer
+access: 3rd-Party
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+tags:
+  - API
+created: '2024-11-12'
+modified: '2024-11-12'
+url: https://raw.githubusercontent.com/api-search/brex/refs/heads/main/apis.yml
+specificationVersion: '0.19'
+apis:
+  - aid: brex:brex
+    name: Brex
+    description: 'The budgets API lets you manage your Brex Budgets and Spend Limits. '
+    humanURL: ' https://developer.brex.com/openapi/budgets_api/'
+    tags:
+      - API
+    properties:
+      - type: Documentation
+        url: ' https://developer.brex.com/openapi/budgets_api/'
+maintainers:
+  - FN: Kin Lane
+    email: info@apievangelist.com
