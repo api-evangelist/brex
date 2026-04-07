@@ -3,8 +3,7 @@ url: https://raw.githubusercontent.com/api-search/brex/refs/heads/main/apis.yml
 apis:
   - aid: brex:brex
     name: Brex
-    tags:
-      - API
+    tags: []
     humanURL: ' https://developer.brex.com/openapi/budgets_api/'
     properties:
       - url: ' https://developer.brex.com/openapi/budgets_api/'
@@ -13,11 +12,11 @@ apis:
       The budgets API lets you manage your Brex Budgets and Spend Limits.
 name: Brex
 tags:
-  - Spending
+  - Bill Pay
   - Corporate Cards
   - Expenses
   - Reimbursements
-  - Bill Pay
+  - Spending
 type: Contract
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 access: 3rd-Party
