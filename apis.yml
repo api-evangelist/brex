@@ -8,6 +8,8 @@ apis:
     properties:
       - url: ' https://developer.brex.com/openapi/budgets_api/'
         type: Documentation
+      - url: openapi/brex-openapi.yml
+        type: OpenAPI
     description: >-
       The budgets API lets you manage your Brex Budgets and Spend Limits.
 name: Brex
