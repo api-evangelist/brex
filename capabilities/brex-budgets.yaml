@@ -1,0 +1,370 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Brex Budgets API — Budgets
+  description: 'Brex Budgets API — Budgets. 10 operations. Lead operation: List Spend Limits (v1). Self-contained Naftiko
+    capability covering one Brex business surface.'
+  tags:
+  - Brex
+  - Budgets
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    BREX_API_KEY: BREX_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: brex-budgets
+    baseUri: https://platform.brexapis.com
+    description: Brex Budgets API — Budgets business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-budgets
+      path: /v1/budgets
+      operations:
+      - name: listv1budgets
+        method: GET
+        description: List Spend Limits (v1)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createv1budget
+        method: POST
+        description: Create a Spend Limit (v1)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: v1-budgets-id
+      path: /v1/budgets/{id}
+      operations:
+      - name: getv1budget
+        method: GET
+        description: Retrieve a Spend Limit by ID (v1)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: updatev1budget
+        method: PUT
+        description: Update a Spend Limit (v1)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: v1-budgets-id-archive
+      path: /v1/budgets/{id}/archive
+      operations:
+      - name: archivev1budget
+        method: POST
+        description: Archive a Spend Limit (v1)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v2-budgets
+      path: /v2/budgets
+      operations:
+      - name: listv2budgets
+        method: GET
+        description: List Budgets (v2)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createv2budget
+        method: POST
+        description: Create a Budget (v2)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: v2-budgets-id
+      path: /v2/budgets/{id}
+      operations:
+      - name: getv2budget
+        method: GET
+        description: Retrieve a Budget by ID (v2)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: updatev2budget
+        method: PUT
+        description: Update a Budget (v2)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: v2-budgets-id-archive
+      path: /v2/budgets/{id}/archive
+      operations:
+      - name: archivev2budget
+        method: POST
+        description: Archive a Budget (v2)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.BREX_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: brex-budgets-rest
+    port: 8080
+    description: REST adapter for Brex Budgets API — Budgets. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/v1/budgets
+      name: v1-budgets
+      description: REST surface for v1-budgets.
+      operations:
+      - method: GET
+        name: listv1budgets
+        description: List Spend Limits (v1)
+        call: brex-budgets.listv1budgets
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createv1budget
+        description: Create a Spend Limit (v1)
+        call: brex-budgets.createv1budget
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/budgets/{id}
+      name: v1-budgets-id
+      description: REST surface for v1-budgets-id.
+      operations:
+      - method: GET
+        name: getv1budget
+        description: Retrieve a Spend Limit by ID (v1)
+        call: brex-budgets.getv1budget
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: updatev1budget
+        description: Update a Spend Limit (v1)
+        call: brex-budgets.updatev1budget
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/budgets/{id}/archive
+      name: v1-budgets-id-archive
+      description: REST surface for v1-budgets-id-archive.
+      operations:
+      - method: POST
+        name: archivev1budget
+        description: Archive a Spend Limit (v1)
+        call: brex-budgets.archivev1budget
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/budgets
+      name: v2-budgets
+      description: REST surface for v2-budgets.
+      operations:
+      - method: GET
+        name: listv2budgets
+        description: List Budgets (v2)
+        call: brex-budgets.listv2budgets
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createv2budget
+        description: Create a Budget (v2)
+        call: brex-budgets.createv2budget
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/budgets/{id}
+      name: v2-budgets-id
+      description: REST surface for v2-budgets-id.
+      operations:
+      - method: GET
+        name: getv2budget
+        description: Retrieve a Budget by ID (v2)
+        call: brex-budgets.getv2budget
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: updatev2budget
+        description: Update a Budget (v2)
+        call: brex-budgets.updatev2budget
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/budgets/{id}/archive
+      name: v2-budgets-id-archive
+      description: REST surface for v2-budgets-id-archive.
+      operations:
+      - method: POST
+        name: archivev2budget
+        description: Archive a Budget (v2)
+        call: brex-budgets.archivev2budget
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: brex-budgets-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Brex Budgets API — Budgets. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: list-spend-limits-v1
+      description: List Spend Limits (v1)
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: brex-budgets.listv1budgets
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-spend-limit-v1
+      description: Create a Spend Limit (v1)
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: brex-budgets.createv1budget
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-spend-limit-id-v1
+      description: Retrieve a Spend Limit by ID (v1)
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: brex-budgets.getv1budget
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-spend-limit-v1
+      description: Update a Spend Limit (v1)
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: brex-budgets.updatev1budget
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: archive-spend-limit-v1
+      description: Archive a Spend Limit (v1)
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: brex-budgets.archivev1budget
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-budgets-v2
+      description: List Budgets (v2)
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: brex-budgets.listv2budgets
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-budget-v2
+      description: Create a Budget (v2)
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: brex-budgets.createv2budget
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-budget-id-v2
+      description: Retrieve a Budget by ID (v2)
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: brex-budgets.getv2budget
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-budget-v2
+      description: Update a Budget (v2)
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: brex-budgets.updatev2budget
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: archive-budget-v2
+      description: Archive a Budget (v2)
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: brex-budgets.archivev2budget
+      outputParameters:
+      - type: object
+        mapping: $.

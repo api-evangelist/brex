@@ -1,0 +1,102 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Brex Budgets API — Budget Programs
+  description: 'Brex Budgets API — Budget Programs. 2 operations. Lead operation: List Budget Programs. Self-contained Naftiko
+    capability covering one Brex business surface.'
+  tags:
+  - Brex
+  - Budget Programs
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    BREX_API_KEY: BREX_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: brex-budget-programs
+    baseUri: https://platform.brexapis.com
+    description: Brex Budgets API — Budget Programs business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-budget_programs
+      path: /v1/budget_programs
+      operations:
+      - name: listbudgetprograms
+        method: GET
+        description: List Budget Programs
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-budget_programs-id
+      path: /v1/budget_programs/{id}
+      operations:
+      - name: getbudgetprogram
+        method: GET
+        description: Retrieve a Budget Program by ID
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.BREX_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: brex-budget-programs-rest
+    port: 8080
+    description: REST adapter for Brex Budgets API — Budget Programs. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/v1/budget-programs
+      name: v1-budget-programs
+      description: REST surface for v1-budget_programs.
+      operations:
+      - method: GET
+        name: listbudgetprograms
+        description: List Budget Programs
+        call: brex-budget-programs.listbudgetprograms
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/budget-programs/{id}
+      name: v1-budget-programs-id
+      description: REST surface for v1-budget_programs-id.
+      operations:
+      - method: GET
+        name: getbudgetprogram
+        description: Retrieve a Budget Program by ID
+        call: brex-budget-programs.getbudgetprogram
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: brex-budget-programs-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Brex Budgets API — Budget Programs. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-budget-programs
+      description: List Budget Programs
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: brex-budget-programs.listbudgetprograms
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-budget-program-id
+      description: Retrieve a Budget Program by ID
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: brex-budget-programs.getbudgetprogram
+      outputParameters:
+      - type: object
+        mapping: $.
