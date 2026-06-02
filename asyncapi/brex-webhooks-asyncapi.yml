@@ -1,0 +1,646 @@
+asyncapi: '2.6.0'
+id: 'urn:com:brex:webhooks'
+info:
+  title: Brex Webhooks API
+  version: '0.1'
+  description: >
+    AsyncAPI 2.6 description of the Brex Webhooks surface. Brex uses webhooks to
+    deliver real-time notifications when events happen in the accounts that you
+    manage. Subscribers register an HTTPS callback URL via the Webhooks API
+    (Subscriptions endpoints) and select one or more event types from the
+    `WebhookEventType` enum. Brex POSTs JSON payloads to the registered URL when
+    matching events occur; subscribers respond with a 200 status code to confirm
+    receipt. Incoming requests can be validated using the secrets returned from
+    `GET /v1/webhooks/secrets`.
+  contact:
+    name: Brex Developer Support
+    url: https://developer.brex.com/
+    email: developer-support@brex.com
+  license:
+    name: Proprietary
+  x-generated-from: https://developer.brex.com/openapi/webhooks_api/
+  x-source-bundle: https://developer.brex.com/_bundle/openapi/webhooks_api.yaml
+  x-generated-by: claude-crawl-2026-05-30
+  x-api-evangelist:
+    aid: brex:brex-webhooks
+    note: >
+      Only the event types and payload schemas that are explicitly documented in
+      the Brex Webhooks OpenAPI bundle are modeled here. The WebhookEventType
+      enum contains additional values used by the Brex Embedded program
+      (EMBEDDED_* and PARTNERSHIP_INTEGRATION_CONNECTION_UPDATED) for which Brex
+      does not publish public payload schemas; those values are kept in the enum
+      but not bound to dedicated channels.
+defaultContentType: application/json
+servers:
+  subscriber:
+    url: '{webhookUrl}'
+    protocol: https
+    description: >
+      The HTTPS endpoint that the subscriber registers with Brex via
+      `POST /v1/webhooks`. Brex delivers webhook events by sending HTTPS POST
+      requests to this URL. Must be a valid HTTPS URL.
+    variables:
+      webhookUrl:
+        default: https://example.com/webhook
+        description: The subscriber-controlled HTTPS callback URL.
+channels:
+  accountingRecordReadyForExport:
+    description: >-
+      Fired when a list of accounting records is ready for export. Sent to the
+      subscriber callback URL via HTTPS POST.
+    publish:
+      operationId: onAccountingRecordReadyForExport
+      summary: Accounting Record Ready For Export Event
+      description: A list of accounting records are ready for export.
+      bindings:
+        http:
+          type: request
+          method: POST
+          bindingVersion: '0.3.0'
+      message:
+        $ref: '#/components/messages/AccountingRecordReadyForExport'
+  expensePaymentUpdated:
+    description: >-
+      Fired when an expense payment changes status on a Brex Card. Subscription
+      must be registered with a user with the CARD_ADMIN role.
+    publish:
+      operationId: onExpensePaymentUpdated
+      summary: Expense Payment Updated Event
+      description: Expense activity on Brex Cards.
+      bindings:
+        http:
+          type: request
+          method: POST
+          bindingVersion: '0.3.0'
+      message:
+        $ref: '#/components/messages/ExpensePaymentUpdated'
+  referralActivated:
+    description: Fired when a user signs up with the referral link.
+    publish:
+      operationId: onReferralActivated
+      summary: Referral Activated Event
+      description: A referral was activated.
+      bindings:
+        http:
+          type: request
+          method: POST
+          bindingVersion: '0.3.0'
+      message:
+        $ref: '#/components/messages/ReferralActivated'
+  referralApplicationStatusChanged:
+    description: Fired when the application status of a referral changes.
+    publish:
+      operationId: onReferralApplicationStatusChanged
+      summary: Referral Application Status Changed Event
+      description: A referral's application status changed.
+      bindings:
+        http:
+          type: request
+          method: POST
+          bindingVersion: '0.3.0'
+      message:
+        $ref: '#/components/messages/ReferralApplicationStatusChanged'
+  referralCreated:
+    description: Fired when a referral is created.
+    publish:
+      operationId: onReferralCreated
+      summary: Referral Created Event
+      description: A referral was created.
+      bindings:
+        http:
+          type: request
+          method: POST
+          bindingVersion: '0.3.0'
+      message:
+        $ref: '#/components/messages/ReferralCreated'
+  transferFailed:
+    description: >-
+      Fired when a transfer fails. Covers incoming and outgoing Brex Cash
+      transactions and supports ACH, DOMESTIC_WIRE, CHEQUE, INTERNATIONAL_WIRE,
+      BOOK_TRANSFER, STABLECOIN, and the ACH_RETURN / WIRE_RETURN /
+      CHEQUE_RETURN return types.
+    publish:
+      operationId: onTransferFailed
+      summary: Transfer Failed Event
+      description: >-
+        Transfer failed events for both incoming and outgoing Brex Cash
+        transactions.
+      bindings:
+        http:
+          type: request
+          method: POST
+          bindingVersion: '0.3.0'
+      message:
+        $ref: '#/components/messages/TransferFailed'
+  transferProcessed:
+    description: >-
+      Fired when a transfer is processed. Covers incoming and outgoing Brex Cash
+      transactions across the same payment types as `transferFailed`.
+    publish:
+      operationId: onTransferProcessed
+      summary: Transfer Processed Event
+      description: >-
+        Transfer processed events for both incoming and outgoing Brex Cash
+        transactions.
+      bindings:
+        http:
+          type: request
+          method: POST
+          bindingVersion: '0.3.0'
+      message:
+        $ref: '#/components/messages/TransferProcessed'
+  userUpdated:
+    description: >-
+      Fired when a Brex user is updated. The payload lists which user attributes
+      changed (STATUS, MANAGER_ID, DEPARTMENT_ID, LOCATION_ID).
+    publish:
+      operationId: onUserUpdated
+      summary: User Updated Event
+      description: Updates on Brex users.
+      bindings:
+        http:
+          type: request
+          method: POST
+          bindingVersion: '0.3.0'
+      message:
+        $ref: '#/components/messages/UserUpdated'
+components:
+  messages:
+    AccountingRecordReadyForExport:
+      name: AccountingRecordReadyForExport
+      title: Accounting Record Ready For Export
+      summary: A list of accounting records are ready for export.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AccountingRecordReadyForExport'
+    ExpensePaymentUpdated:
+      name: ExpensePaymentUpdated
+      title: Expense Payment Updated
+      summary: An expense payment changed status on a Brex Card.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ExpensePaymentUpdated'
+    ReferralActivated:
+      name: ReferralActivated
+      title: Referral Activated
+      summary: A user signed up with a referral link.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ReferralActivated'
+    ReferralApplicationStatusChanged:
+      name: ReferralApplicationStatusChanged
+      title: Referral Application Status Changed
+      summary: A referral's application status changed.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ReferralApplicationStatusChanged'
+    ReferralCreated:
+      name: ReferralCreated
+      title: Referral Created
+      summary: A referral was created.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ReferralCreated'
+    TransferFailed:
+      name: TransferFailed
+      title: Transfer Failed
+      summary: A Brex Cash transfer failed.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/TransferFailed'
+    TransferProcessed:
+      name: TransferProcessed
+      title: Transfer Processed
+      summary: A Brex Cash transfer was processed.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/TransferProcessed'
+    UserUpdated:
+      name: UserUpdated
+      title: User Updated
+      summary: A Brex user was updated.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/UserUpdated'
+  schemas:
+    WebhookEventType:
+      type: string
+      description: >-
+        The full set of webhook event type identifiers recognized by Brex. The
+        Brex Embedded program (EMBEDDED_* and
+        PARTNERSHIP_INTEGRATION_CONNECTION_UPDATED) extends this enum but does
+        not publish public payload schemas.
+      enum:
+        - REFERRAL_CREATED
+        - REFERRAL_ACTIVATED
+        - REFERRAL_APPLICATION_STATUS_CHANGED
+        - TRANSFER_PROCESSED
+        - TRANSFER_FAILED
+        - EXPENSE_PAYMENT_UPDATED
+        - USER_UPDATED
+        - EMBEDDED_CARD_TRANSACTION_UPDATED
+        - EMBEDDED_CARD_UPDATED
+        - EMBEDDED_ACCOUNT_UPDATED
+        - EMBEDDED_CARD_SHIPPING_UPDATED
+        - EMBEDDED_DISPUTE_UPDATED
+        - PARTNERSHIP_INTEGRATION_CONNECTION_UPDATED
+        - EMBEDDED_CARD_AUTHORIZATION
+        - EMBEDDED_FRAUD_ALERT
+        - EMBEDDED_BILLING_GROUP_UPDATED
+        - EMBEDDED_LEGAL_ENTITY_UPDATED
+        - EMBEDDED_BILLING_STATEMENT_UPDATED
+        - EMBEDDED_USER_STATUS_UPDATED
+        - ACCOUNTING_RECORD_READY_FOR_EXPORT
+    ApplicationStatus:
+      type: string
+      description: >
+        Application status of a product.
+
+        `NO_ACCOUNT` - There is no active application, and the product account
+        is not provisioned.
+
+        `ACTIVE` - The application is approved, and the product account is
+        provisioned.
+
+        `NOT_SUBMITTED` - The application is started but not yet submitted.
+
+        `INFORMATION_PENDING` - The application is submitted and additional
+        information is requested.
+
+        `MANUAL_REVIEW` - The application is under manual review.
+
+        `PROCESSING` - The application is submitted and is under review.
+
+        `REJECTED` - The application is rejected.
+
+        `CLOSED` - The product account is closed.
+      enum:
+        - NO_ACCOUNT
+        - ACTIVE
+        - NOT_SUBMITTED
+        - INFORMATION_PENDING
+        - MANUAL_REVIEW
+        - PROCESSING
+        - REJECTED
+        - CLOSED
+    ProductApplication:
+      type: object
+      description: The product application details for the referral.
+      required:
+        - cash
+      properties:
+        cash:
+          $ref: '#/components/schemas/ApplicationStatus'
+    ExpensePaymentStatus:
+      type: string
+      description: >-
+        `PENDING`: The transaction is yet to be captured. It may be approved,
+        yet to be approved, or yet to be declined.
+
+        `DECLINED`: The transaction was declined.
+      enum:
+        - PENDING
+        - DECLINED
+    ExpensePaymentType:
+      type: string
+      description: >-
+        `PURCHASE`: A pending transaction for making a purchase.
+
+        `REFUND`: A pending transaction for a refund.
+
+        `WITHDRAWAL`: A pending transaction for a withdrawal.
+
+        `DECLINED`: A pending transaction that was declined and will not be
+        completed.
+      enum:
+        - PURCHASE
+        - REFUND
+        - WITHDRAWAL
+        - DECLINED
+    PaymentType:
+      type: string
+      description: >-
+        Only ACH, DOMESTIC_WIRE, CHEQUE, INTERNATIONAL_WIRE, BOOK_TRANSFER, and
+        STABLECOIN details can be retrieved from the Payments API.
+      enum:
+        - ACH
+        - DOMESTIC_WIRE
+        - CHEQUE
+        - INTERNATIONAL_WIRE
+        - BOOK_TRANSFER
+        - STABLECOIN
+        - ACH_RETURN
+        - WIRE_RETURN
+        - CHEQUE_RETURN
+    PaymentStatusReason:
+      type: string
+      description: The reason for the payment's status.
+      enum:
+        - OTHER
+        - APPROVED
+        - EXCEEDED_BUDGET_LIMIT
+        - BUDGET_EXPIRED
+        - NO_BUDGET
+        - BUDGET_NOT_YET_STARTED
+        - BUDGET_CATEGORY_RESTRICTION
+        - BUDGET_MERCHANT_RESTRICTION
+        - SUSPECTED_FRAUD
+        - EXCEEDED_GLOBAL_LIMIT
+        - EXCEEDED_USER_LIMIT
+        - EXCEEDED_CARD_LIMIT
+        - INVALID_EXPIRATION_DATE
+        - CARD_NOT_ACTIVE
+        - INVALID_CARD_CREDENTIALS
+        - INVALID_BILLING_ADDRESS
+        - CARD_SUSPENDED
+        - CARD_TERMINATED
+        - CARD_EXPIRED
+        - MCC_BLOCKED
+        - USER_SUSPENDED
+        - INVALID_PIN
+        - INVALID_CVV
+        - EXCEEDED_PIN_ATTEMPTS
+        - INSIDE_SANCTIONED_COUNTRY
+        - SOFT_EXPIRATION
+        - TRANSFERRED_CARD_NEW_MERCHANT
+        - EXCEEDED_ANCESTOR_BUDGET_LIMIT
+        - EXCEEDED_BUDGET_TRANSACTION_LIMIT
+        - TOS_BLOCKED
+        - COMPLIANCE_BLOCKED
+    UserAttributes:
+      type: string
+      description: A user attribute that can change and trigger USER_UPDATED.
+      enum:
+        - STATUS
+        - MANAGER_ID
+        - DEPARTMENT_ID
+        - LOCATION_ID
+    Money:
+      type: object
+      description: >
+        Money fields can be signed or unsigned. Fields are signed (an unsigned
+        value will be interpreted as positive). The amount of money will be
+        represented in the smallest denomination of the currency indicated. For
+        example, USD 7.00 will be represented in cents with an amount of 700.
+      required:
+        - amount
+      properties:
+        amount:
+          type: integer
+          format: int64
+          description: >-
+            The amount of money, in the smallest denomination of the currency
+            indicated by currency. For example, when currency is USD, amount is
+            in cents.
+          example: 700
+        currency:
+          type: string
+          description: The type of currency, in ISO 4217 format.
+          default: USD
+          example: USD
+    Merchant:
+      type: object
+      required:
+        - country
+        - mcc
+        - raw_descriptor
+      properties:
+        raw_descriptor:
+          type: string
+          description: Merchant descriptor, it can be the merchant name.
+        mcc:
+          type: string
+          description: >-
+            A four-digit number listed in ISO 18245 for retail financial
+            services, e.g. 4121 for Taxicabs and Rideshares.
+        country:
+          type: string
+          description: Merchant's country, in ISO 3166-1 alpha-3 format.
+    AccountingRecordReadyForExport:
+      type: object
+      description: A list of accounting records are ready for export.
+      required:
+        - accountingRecordIds
+        - companyId
+        - event_type
+      properties:
+        event_type:
+          allOf:
+            - $ref: '#/components/schemas/WebhookEventType'
+          example: ACCOUNTING_RECORD_READY_FOR_EXPORT
+        accountingRecordIds:
+          type: array
+          description: List of accounting record IDs ready for export.
+          items:
+            type: string
+        companyId:
+          type: string
+          description: >-
+            The `id` returned by the Get Company endpoint of the Team API. Use
+            it to determine which access token to use when fetching details.
+    ExpensePaymentUpdated:
+      type: object
+      description: >-
+        Sent when an expense payment changes status. Subscription must be
+        registered with a user with the CARD_ADMIN role.
+      required:
+        - card_id
+        - company_id
+        - event_type
+        - expense_id
+        - merchant
+        - payment_description
+        - payment_status
+        - payment_status_reason
+        - payment_type
+        - version
+      properties:
+        event_type:
+          allOf:
+            - $ref: '#/components/schemas/WebhookEventType'
+          example: EXPENSE_PAYMENT_UPDATED
+        expense_id:
+          type: string
+          description: Unique ID associated with the expense.
+        payment_status:
+          $ref: '#/components/schemas/ExpensePaymentStatus'
+        payment_type:
+          $ref: '#/components/schemas/ExpensePaymentType'
+        company_id:
+          type: string
+          description: >-
+            The `id` returned by the Get Company endpoint of the Team API. Use
+            it to determine which access token to use when fetching details.
+        purchased_at:
+          type: string
+          format: date-time
+          description: The time the purchase was made.
+        amount:
+          allOf:
+            - $ref: '#/components/schemas/Money'
+          description: Succeeded by the billing_amount field.
+          deprecated: true
+        original_amount:
+          allOf:
+            - $ref: '#/components/schemas/Money'
+          description: >-
+            The original amount of the expense is the amount that the employee
+            submitted or incurred for reimbursements or card spends.
+        billing_amount:
+          allOf:
+            - $ref: '#/components/schemas/Money'
+          description: >-
+            The billing amount of the expense is the amount that the entity is
+            charged, on the entity's currency, for reimbursements or card
+            spends.
+        payment_description:
+          type: string
+          description: Succeeded by the merchant::raw_descriptor field.
+          deprecated: true
+        card_id:
+          type: string
+          description: The ID of the card that is associated with the expense.
+        merchant:
+          allOf:
+            - $ref: '#/components/schemas/Merchant'
+          description: The merchant associated with the expense.
+        payment_status_reason:
+          $ref: '#/components/schemas/PaymentStatusReason'
+        payment_authorization_code:
+          type: string
+          description: The authorization code of the associated card expense.
+        version:
+          type: integer
+          format: int32
+          minimum: 1
+          description: >-
+            Version of this expense. This value starts at 1 and is incremented
+            by 1 with every update.
+          example: 1
+    ReferralActivated:
+      type: object
+      description: Sent when a user signs up with the referral link.
+      required:
+        - event_type
+        - referral_id
+      properties:
+        event_type:
+          allOf:
+            - $ref: '#/components/schemas/WebhookEventType'
+          example: REFERRAL_ACTIVATED
+        referral_id:
+          type: string
+          description: The referral ID.
+    ReferralApplicationStatusChanged:
+      type: object
+      description: Sent when the application status is changed for a referral.
+      required:
+        - application
+        - event_type
+        - referral_id
+      properties:
+        event_type:
+          allOf:
+            - $ref: '#/components/schemas/WebhookEventType'
+          example: REFERRAL_APPLICATION_STATUS_CHANGED
+        referral_id:
+          type: string
+          description: The referral ID.
+        application:
+          $ref: '#/components/schemas/ProductApplication'
+    ReferralCreated:
+      type: object
+      description: Sent when a referral is created.
+      required:
+        - event_type
+        - referral_id
+      properties:
+        event_type:
+          allOf:
+            - $ref: '#/components/schemas/WebhookEventType'
+          example: REFERRAL_CREATED
+        referral_id:
+          type: string
+          description: The referral ID.
+    TransferFailed:
+      type: object
+      description: Sent when a transfer failed.
+      required:
+        - company_id
+        - event_type
+        - payment_type
+        - transfer_id
+      properties:
+        event_type:
+          allOf:
+            - $ref: '#/components/schemas/WebhookEventType'
+          example: TRANSFER_FAILED
+        transfer_id:
+          type: string
+          description: The transfer ID.
+        payment_type:
+          $ref: '#/components/schemas/PaymentType'
+        return_for_id:
+          type: string
+          description: >-
+            The original transaction ID that is returned when the payment type
+            is ACH_RETURN, WIRE_RETURN, or CHEQUE_RETURN.
+        company_id:
+          type: string
+          description: >-
+            The `id` returned by the Get Company endpoint of the Team API. Use
+            it to determine which access token to use when fetching details.
+    TransferProcessed:
+      type: object
+      description: Sent when a transfer is processed.
+      required:
+        - company_id
+        - event_type
+        - payment_type
+        - transfer_id
+      properties:
+        event_type:
+          allOf:
+            - $ref: '#/components/schemas/WebhookEventType'
+          example: TRANSFER_PROCESSED
+        transfer_id:
+          type: string
+          description: The transfer ID.
+        payment_type:
+          $ref: '#/components/schemas/PaymentType'
+        return_for_id:
+          type: string
+          description: >-
+            The original transaction ID that is returned when the payment type
+            is ACH_RETURN, WIRE_RETURN, or CHEQUE_RETURN.
+        company_id:
+          type: string
+          description: >-
+            The `id` returned by the Get Company endpoint of the Team API. Use
+            it to determine which access token to use when fetching details.
+    UserUpdated:
+      type: object
+      description: Sent when a user is updated.
+      required:
+        - company_id
+        - event_type
+        - updated_attributes
+        - user_id
+      properties:
+        event_type:
+          allOf:
+            - $ref: '#/components/schemas/WebhookEventType'
+          example: USER_UPDATED
+        user_id:
+          type: string
+          description: The ID of the user that was updated.
+        company_id:
+          type: string
+          description: >-
+            The `id` returned by the Get Company endpoint of the Team API. Use
+            it to determine which access token to use when fetching details.
+        updated_attributes:
+          type: array
+          description: The set of user attributes that changed in this update.
+          items:
+            $ref: '#/components/schemas/UserAttributes'
