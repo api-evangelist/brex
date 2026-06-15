@@ -1,0 +1,321 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Brex Budgets API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Budgets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Spend Limits (v1)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://platform.brexapis.com/v1/budgets"
+          },
+          "docs": "List Spend Limits (v1)"
+        },
+        {
+          "info": {
+            "name": "Create a Spend Limit (v1)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://platform.brexapis.com/v1/budgets",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a Spend Limit (v1)"
+        },
+        {
+          "info": {
+            "name": "Retrieve a Spend Limit by ID (v1)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://platform.brexapis.com/v1/budgets/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve a Spend Limit by ID (v1)"
+        },
+        {
+          "info": {
+            "name": "Update a Spend Limit (v1)",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://platform.brexapis.com/v1/budgets/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a Spend Limit (v1)"
+        },
+        {
+          "info": {
+            "name": "Archive a Spend Limit (v1)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://platform.brexapis.com/v1/budgets/:id/archive",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Archive a Spend Limit (v1)"
+        },
+        {
+          "info": {
+            "name": "List Budgets (v2)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://platform.brexapis.com/v2/budgets"
+          },
+          "docs": "List Budgets (v2)"
+        },
+        {
+          "info": {
+            "name": "Create a Budget (v2)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://platform.brexapis.com/v2/budgets",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a Budget (v2)"
+        },
+        {
+          "info": {
+            "name": "Retrieve a Budget by ID (v2)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://platform.brexapis.com/v2/budgets/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve a Budget by ID (v2)"
+        },
+        {
+          "info": {
+            "name": "Update a Budget (v2)",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://platform.brexapis.com/v2/budgets/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a Budget (v2)"
+        },
+        {
+          "info": {
+            "name": "Archive a Budget (v2)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://platform.brexapis.com/v2/budgets/:id/archive",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Archive a Budget (v2)"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Budget Programs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Budget Programs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://platform.brexapis.com/v1/budget_programs"
+          },
+          "docs": "List Budget Programs"
+        },
+        {
+          "info": {
+            "name": "Retrieve a Budget Program by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://platform.brexapis.com/v1/budget_programs/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve a Budget Program by ID"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Spend Limits",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Spend Limits (v2)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://platform.brexapis.com/v2/spend_limits"
+          },
+          "docs": "List Spend Limits (v2)"
+        },
+        {
+          "info": {
+            "name": "Create a Spend Limit (v2)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://platform.brexapis.com/v2/spend_limits",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a Spend Limit (v2)"
+        },
+        {
+          "info": {
+            "name": "Retrieve a Spend Limit by ID (v2)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://platform.brexapis.com/v2/spend_limits/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve a Spend Limit by ID (v2)"
+        },
+        {
+          "info": {
+            "name": "Update a Spend Limit (v2)",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://platform.brexapis.com/v2/spend_limits/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a Spend Limit (v2)"
+        },
+        {
+          "info": {
+            "name": "Archive a Spend Limit (v2)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://platform.brexapis.com/v2/spend_limits/:id/archive",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Archive a Spend Limit (v2)"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
