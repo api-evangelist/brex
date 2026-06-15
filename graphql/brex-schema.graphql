@@ -1,0 +1,974 @@
+"""
+Brex GraphQL Schema
+Derived from the Brex REST API covering corporate cards, business accounts,
+bill pay, expense management, and team management.
+"""
+
+# ─────────────────────────────────────────────
+# Scalars
+# ─────────────────────────────────────────────
+
+scalar DateTime
+scalar Date
+scalar Decimal
+scalar JSON
+
+# ─────────────────────────────────────────────
+# Enums
+# ─────────────────────────────────────────────
+
+enum AccountStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  CLOSED
+}
+
+enum AccountType {
+  CHECKING
+  SAVINGS
+  CREDIT
+}
+
+enum CardStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  TERMINATED
+  PENDING
+}
+
+enum CardType {
+  VIRTUAL
+  PHYSICAL
+}
+
+enum CardNetworkType {
+  VISA
+  MASTERCARD
+}
+
+enum TransactionStatus {
+  PENDING
+  CLEARED
+  DECLINED
+  REFUNDED
+  VOID
+}
+
+enum TransactionType {
+  PURCHASE
+  REFUND
+  FEE
+  TRANSFER
+  PAYMENT
+  ADJUSTMENT
+}
+
+enum CurrencyCode {
+  USD
+  EUR
+  GBP
+  CAD
+  AUD
+  JPY
+  CNY
+  INR
+  MXN
+  BRL
+  CHF
+  SGD
+  HKD
+  SEK
+  NOK
+  DKK
+  NZD
+}
+
+enum ExpenseStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  DENIED
+  PAID
+  VOIDED
+  ARCHIVED
+}
+
+enum ExpenseCategoryType {
+  ADVERTISING
+  CONSULTING
+  DUES_AND_SUBSCRIPTIONS
+  ENTERTAINMENT
+  EQUIPMENT
+  FOOD_AND_BEVERAGE
+  GIFTS
+  HOTEL
+  OFFICE_SUPPLIES
+  OTHER
+  POSTAGE_AND_SHIPPING
+  PROFESSIONAL_SERVICES
+  RENT
+  SOFTWARE
+  TAXES
+  TELEPHONE
+  TRAVEL
+  UTILITIES
+}
+
+enum BudgetStatus {
+  ACTIVE
+  INACTIVE
+  EXPIRED
+}
+
+enum BudgetPeriodType {
+  MONTHLY
+  QUARTERLY
+  ANNUALLY
+  CUSTOM
+}
+
+enum SpendLimitType {
+  AMOUNT
+  TRANSACTION
+}
+
+enum UserRole {
+  ADMIN
+  BOOKKEEPER
+  CARD_ADMIN
+  EXPENSE_MANAGER
+  SUBMITTER
+  VIEWER
+}
+
+enum UserStatus {
+  ACTIVE
+  INVITED
+  DEACTIVATED
+}
+
+enum VendorStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+  RETURNED
+}
+
+enum PaymentMethod {
+  ACH
+  WIRE
+  CHECK
+  CARD
+}
+
+enum StatementStatus {
+  OPEN
+  CLOSED
+  PAID
+}
+
+enum MerchantCategoryCode {
+  AIRLINES
+  AUTO_RENTAL
+  GAS_STATIONS
+  GROCERY_STORES
+  HOTELS_AND_MOTELS
+  MISCELLANEOUS
+  RESTAURANTS
+  RETAIL
+  TECHNOLOGY
+  TRAVEL
+}
+
+enum SortOrder {
+  ASC
+  DESC
+}
+
+enum ReimbursementStatus {
+  PENDING
+  APPROVED
+  DENIED
+  PAID
+  VOIDED
+}
+
+enum WebhookEventType {
+  CARD_CREATED
+  CARD_UPDATED
+  EXPENSE_CREATED
+  EXPENSE_UPDATED
+  PAYMENT_CREATED
+  PAYMENT_UPDATED
+  TRANSACTION_CREATED
+  USER_CREATED
+  USER_UPDATED
+}
+
+# ─────────────────────────────────────────────
+# Shared Types
+# ─────────────────────────────────────────────
+
+type Money {
+  amount: Decimal!
+  currency: CurrencyCode!
+}
+
+type Address {
+  line1: String
+  line2: String
+  city: String
+  state: String
+  postalCode: String
+  country: String!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+# ─────────────────────────────────────────────
+# Account Types
+# ─────────────────────────────────────────────
+
+type Account {
+  id: ID!
+  name: String!
+  status: AccountStatus!
+  type: AccountType!
+  currentBalance: Money
+  availableBalance: Money
+  routingNumber: String
+  accountNumber: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type AccountConnection {
+  nodes: [Account!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# ─────────────────────────────────────────────
+# Card Types
+# ─────────────────────────────────────────────
+
+type Card {
+  id: ID!
+  lastFour: String!
+  expirationMonth: Int!
+  expirationYear: Int!
+  status: CardStatus!
+  type: CardType!
+  network: CardNetworkType!
+  spendControls: SpendControls
+  owner: User
+  budget: Budget
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type SpendControls {
+  spendLimit: Money
+  spendDuration: BudgetPeriodType
+  spendTypes: [ExpenseCategoryType!]
+  lockAfterDate: Date
+  allowedMerchantCategories: [MerchantCategoryCode!]
+  blockedMerchantCategories: [MerchantCategoryCode!]
+}
+
+type CardConnection {
+  nodes: [Card!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# ─────────────────────────────────────────────
+# Transaction Types
+# ─────────────────────────────────────────────
+
+type Transaction {
+  id: ID!
+  amount: Money!
+  status: TransactionStatus!
+  type: TransactionType!
+  merchantName: String
+  merchantCategoryCode: MerchantCategoryCode
+  card: Card
+  account: Account
+  expense: Expense
+  postedAt: DateTime
+  initiatedAt: DateTime!
+  description: String
+  metadata: JSON
+}
+
+type TransactionConnection {
+  nodes: [Transaction!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# ─────────────────────────────────────────────
+# Statement Types
+# ─────────────────────────────────────────────
+
+type Statement {
+  id: ID!
+  status: StatementStatus!
+  openedAt: Date!
+  closedAt: Date
+  dueAt: Date
+  startingBalance: Money!
+  endingBalance: Money!
+  minimumPayment: Money
+  totalCredits: Money!
+  totalDebits: Money!
+  account: Account!
+  transactions: TransactionConnection
+}
+
+type StatementConnection {
+  nodes: [Statement!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# ─────────────────────────────────────────────
+# Expense Types
+# ─────────────────────────────────────────────
+
+type Expense {
+  id: ID!
+  memo: String
+  status: ExpenseStatus!
+  amount: Money!
+  category: ExpenseCategory
+  receipts: [Receipt!]
+  transaction: Transaction
+  submittedBy: User
+  reviewedBy: User
+  budget: Budget
+  merchant: Merchant
+  tags: [ExpenseTag!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type ExpenseCategory {
+  id: ID!
+  name: String!
+  type: ExpenseCategoryType!
+  code: String
+  parentCategory: ExpenseCategory
+}
+
+type Receipt {
+  id: ID!
+  url: String!
+  mimeType: String!
+  uploadedAt: DateTime!
+  uploadedBy: User
+}
+
+type ExpenseTag {
+  id: ID!
+  name: String!
+  value: String
+}
+
+type ExpenseConnection {
+  nodes: [Expense!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# ─────────────────────────────────────────────
+# Budget Types
+# ─────────────────────────────────────────────
+
+type Budget {
+  id: ID!
+  name: String!
+  description: String
+  status: BudgetStatus!
+  period: BudgetPeriodType!
+  limit: Money
+  spent: Money
+  remaining: Money
+  utilizationPercent: Decimal
+  startDate: Date
+  endDate: Date
+  owner: User
+  members: [User!]
+  cards: [Card!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type BudgetConnection {
+  nodes: [Budget!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# ─────────────────────────────────────────────
+# User / Team Types
+# ─────────────────────────────────────────────
+
+type User {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  email: String!
+  status: UserStatus!
+  role: UserRole!
+  department: Department
+  location: Location
+  manager: User
+  directReports: [User!]
+  cards: [Card!]
+  expenses: ExpenseConnection
+  reimbursements: ReimbursementConnection
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Department {
+  id: ID!
+  name: String!
+  members: [User!]
+  budget: Budget
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Location {
+  id: ID!
+  name: String!
+  address: Address
+  members: [User!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type UserConnection {
+  nodes: [User!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type DepartmentConnection {
+  nodes: [Department!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type LocationConnection {
+  nodes: [Location!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# ─────────────────────────────────────────────
+# Vendor Types
+# ─────────────────────────────────────────────
+
+type Vendor {
+  id: ID!
+  name: String!
+  status: VendorStatus!
+  email: String
+  phone: String
+  address: Address
+  taxId: String
+  bankAccount: BankAccount
+  paymentTerms: String
+  bills: BillConnection
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type BankAccount {
+  id: ID!
+  accountNumber: String!
+  routingNumber: String!
+  accountType: AccountType!
+  bankName: String
+}
+
+type VendorConnection {
+  nodes: [Vendor!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# ─────────────────────────────────────────────
+# Bill Pay Types
+# ─────────────────────────────────────────────
+
+type Bill {
+  id: ID!
+  vendor: Vendor!
+  amount: Money!
+  dueAt: Date!
+  description: String
+  invoiceNumber: String
+  status: PaymentStatus!
+  payment: Payment
+  attachments: [BillAttachment!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type BillAttachment {
+  id: ID!
+  url: String!
+  mimeType: String!
+  name: String
+  uploadedAt: DateTime!
+}
+
+type Payment {
+  id: ID!
+  amount: Money!
+  status: PaymentStatus!
+  method: PaymentMethod!
+  vendor: Vendor
+  account: Account
+  scheduledAt: DateTime
+  processedAt: DateTime
+  description: String
+  referenceId: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type BillConnection {
+  nodes: [Bill!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type PaymentConnection {
+  nodes: [Payment!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# ─────────────────────────────────────────────
+# Reimbursement Types
+# ─────────────────────────────────────────────
+
+type Reimbursement {
+  id: ID!
+  amount: Money!
+  status: ReimbursementStatus!
+  submittedBy: User!
+  reviewedBy: User
+  memo: String
+  receipts: [Receipt!]
+  category: ExpenseCategory
+  paidAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type ReimbursementConnection {
+  nodes: [Reimbursement!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# ─────────────────────────────────────────────
+# Merchant Types
+# ─────────────────────────────────────────────
+
+type Merchant {
+  id: ID!
+  name: String!
+  categoryCode: MerchantCategoryCode
+  address: Address
+  website: String
+  logoUrl: String
+}
+
+# ─────────────────────────────────────────────
+# Webhook Types
+# ─────────────────────────────────────────────
+
+type Webhook {
+  id: ID!
+  url: String!
+  eventTypes: [WebhookEventType!]!
+  active: Boolean!
+  secret: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type WebhookConnection {
+  nodes: [Webhook!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# ─────────────────────────────────────────────
+# Input Types
+# ─────────────────────────────────────────────
+
+input PaginationInput {
+  first: Int
+  after: String
+  last: Int
+  before: String
+}
+
+input MoneyInput {
+  amount: Decimal!
+  currency: CurrencyCode!
+}
+
+input AddressInput {
+  line1: String
+  line2: String
+  city: String
+  state: String
+  postalCode: String
+  country: String!
+}
+
+input CreateCardInput {
+  ownerId: ID!
+  budgetId: ID
+  type: CardType!
+  spendControls: SpendControlsInput
+}
+
+input SpendControlsInput {
+  spendLimit: MoneyInput
+  spendDuration: BudgetPeriodType
+  spendTypes: [ExpenseCategoryType!]
+  lockAfterDate: Date
+  allowedMerchantCategories: [MerchantCategoryCode!]
+  blockedMerchantCategories: [MerchantCategoryCode!]
+}
+
+input UpdateCardInput {
+  status: CardStatus
+  spendControls: SpendControlsInput
+  budgetId: ID
+}
+
+input CreateBudgetInput {
+  name: String!
+  description: String
+  period: BudgetPeriodType!
+  limit: MoneyInput
+  startDate: Date
+  endDate: Date
+  ownerId: ID!
+  memberIds: [ID!]
+}
+
+input UpdateBudgetInput {
+  name: String
+  description: String
+  limit: MoneyInput
+  endDate: Date
+  status: BudgetStatus
+  memberIds: [ID!]
+}
+
+input CreateExpenseInput {
+  amount: MoneyInput!
+  memo: String
+  categoryId: ID
+  budgetId: ID
+  transactionId: ID
+  tags: [ExpenseTagInput!]
+}
+
+input UpdateExpenseInput {
+  memo: String
+  categoryId: ID
+  budgetId: ID
+  status: ExpenseStatus
+  tags: [ExpenseTagInput!]
+}
+
+input ExpenseTagInput {
+  name: String!
+  value: String
+}
+
+input CreateVendorInput {
+  name: String!
+  email: String
+  phone: String
+  address: AddressInput
+  taxId: String
+  bankAccount: BankAccountInput
+  paymentTerms: String
+}
+
+input UpdateVendorInput {
+  name: String
+  email: String
+  phone: String
+  address: AddressInput
+  taxId: String
+  bankAccount: BankAccountInput
+  paymentTerms: String
+  status: VendorStatus
+}
+
+input BankAccountInput {
+  accountNumber: String!
+  routingNumber: String!
+  accountType: AccountType!
+  bankName: String
+}
+
+input CreateBillInput {
+  vendorId: ID!
+  amount: MoneyInput!
+  dueAt: Date!
+  description: String
+  invoiceNumber: String
+}
+
+input UpdateBillInput {
+  amount: MoneyInput
+  dueAt: Date
+  description: String
+  invoiceNumber: String
+}
+
+input CreatePaymentInput {
+  billId: ID
+  vendorId: ID
+  amount: MoneyInput!
+  method: PaymentMethod!
+  accountId: ID!
+  scheduledAt: DateTime
+  description: String
+}
+
+input CreateReimbursementInput {
+  amount: MoneyInput!
+  memo: String
+  categoryId: ID
+}
+
+input UpdateReimbursementInput {
+  memo: String
+  categoryId: ID
+  status: ReimbursementStatus
+}
+
+input InviteUserInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  role: UserRole!
+  departmentId: ID
+  locationId: ID
+  managerId: ID
+}
+
+input UpdateUserInput {
+  role: UserRole
+  departmentId: ID
+  locationId: ID
+  managerId: ID
+  status: UserStatus
+}
+
+input CreateDepartmentInput {
+  name: String!
+  budgetId: ID
+}
+
+input UpdateDepartmentInput {
+  name: String
+  budgetId: ID
+}
+
+input CreateLocationInput {
+  name: String!
+  address: AddressInput
+}
+
+input UpdateLocationInput {
+  name: String
+  address: AddressInput
+}
+
+input CreateWebhookInput {
+  url: String!
+  eventTypes: [WebhookEventType!]!
+  secret: String
+}
+
+input UpdateWebhookInput {
+  url: String
+  eventTypes: [WebhookEventType!]
+  active: Boolean
+}
+
+input TransactionFilterInput {
+  statuses: [TransactionStatus!]
+  types: [TransactionType!]
+  accountId: ID
+  cardId: ID
+  minAmount: MoneyInput
+  maxAmount: MoneyInput
+  fromDate: DateTime
+  toDate: DateTime
+  merchantName: String
+}
+
+input ExpenseFilterInput {
+  statuses: [ExpenseStatus!]
+  categoryIds: [ID!]
+  submittedById: ID
+  budgetId: ID
+  fromDate: DateTime
+  toDate: DateTime
+  minAmount: MoneyInput
+  maxAmount: MoneyInput
+}
+
+# ─────────────────────────────────────────────
+# Query Root
+# ─────────────────────────────────────────────
+
+type Query {
+  # Accounts
+  account(id: ID!): Account
+  accounts(pagination: PaginationInput, status: AccountStatus): AccountConnection!
+
+  # Cards
+  card(id: ID!): Card
+  cards(pagination: PaginationInput, status: CardStatus, type: CardType, ownerId: ID): CardConnection!
+
+  # Transactions
+  transaction(id: ID!): Transaction
+  transactions(pagination: PaginationInput, filter: TransactionFilterInput, orderBy: SortOrder): TransactionConnection!
+
+  # Statements
+  statement(id: ID!): Statement
+  statements(pagination: PaginationInput, accountId: ID, status: StatementStatus): StatementConnection!
+
+  # Expenses
+  expense(id: ID!): Expense
+  expenses(pagination: PaginationInput, filter: ExpenseFilterInput, orderBy: SortOrder): ExpenseConnection!
+  expenseCategories: [ExpenseCategory!]!
+
+  # Budgets
+  budget(id: ID!): Budget
+  budgets(pagination: PaginationInput, status: BudgetStatus, ownerId: ID): BudgetConnection!
+
+  # Users & Team
+  user(id: ID!): User
+  users(pagination: PaginationInput, status: UserStatus, role: UserRole, departmentId: ID): UserConnection!
+  currentUser: User!
+  department(id: ID!): Department
+  departments(pagination: PaginationInput): DepartmentConnection!
+  location(id: ID!): Location
+  locations(pagination: PaginationInput): LocationConnection!
+
+  # Vendors
+  vendor(id: ID!): Vendor
+  vendors(pagination: PaginationInput, status: VendorStatus): VendorConnection!
+
+  # Bills & Payments
+  bill(id: ID!): Bill
+  bills(pagination: PaginationInput, vendorId: ID, status: PaymentStatus): BillConnection!
+  payment(id: ID!): Payment
+  payments(pagination: PaginationInput, method: PaymentMethod, status: PaymentStatus): PaymentConnection!
+
+  # Reimbursements
+  reimbursement(id: ID!): Reimbursement
+  reimbursements(pagination: PaginationInput, status: ReimbursementStatus, submittedById: ID): ReimbursementConnection!
+
+  # Webhooks
+  webhook(id: ID!): Webhook
+  webhooks(pagination: PaginationInput): WebhookConnection!
+}
+
+# ─────────────────────────────────────────────
+# Mutation Root
+# ─────────────────────────────────────────────
+
+type Mutation {
+  # Cards
+  createCard(input: CreateCardInput!): Card!
+  updateCard(id: ID!, input: UpdateCardInput!): Card!
+  activateCard(id: ID!): Card!
+  suspendCard(id: ID!): Card!
+  terminateCard(id: ID!): Card!
+
+  # Budgets
+  createBudget(input: CreateBudgetInput!): Budget!
+  updateBudget(id: ID!, input: UpdateBudgetInput!): Budget!
+  archiveBudget(id: ID!): Budget!
+
+  # Expenses
+  createExpense(input: CreateExpenseInput!): Expense!
+  updateExpense(id: ID!, input: UpdateExpenseInput!): Expense!
+  submitExpense(id: ID!): Expense!
+  approveExpense(id: ID!): Expense!
+  denyExpense(id: ID!, reason: String): Expense!
+  voidExpense(id: ID!): Expense!
+  uploadReceipt(expenseId: ID!, file: String!, mimeType: String!): Receipt!
+
+  # Vendors
+  createVendor(input: CreateVendorInput!): Vendor!
+  updateVendor(id: ID!, input: UpdateVendorInput!): Vendor!
+  deactivateVendor(id: ID!): Vendor!
+
+  # Bills & Payments
+  createBill(input: CreateBillInput!): Bill!
+  updateBill(id: ID!, input: UpdateBillInput!): Bill!
+  deleteBill(id: ID!): Boolean!
+  createPayment(input: CreatePaymentInput!): Payment!
+  cancelPayment(id: ID!): Payment!
+
+  # Reimbursements
+  createReimbursement(input: CreateReimbursementInput!): Reimbursement!
+  updateReimbursement(id: ID!, input: UpdateReimbursementInput!): Reimbursement!
+  submitReimbursement(id: ID!): Reimbursement!
+  approveReimbursement(id: ID!): Reimbursement!
+  denyReimbursement(id: ID!, reason: String): Reimbursement!
+
+  # Users & Team
+  inviteUser(input: InviteUserInput!): User!
+  updateUser(id: ID!, input: UpdateUserInput!): User!
+  deactivateUser(id: ID!): User!
+  createDepartment(input: CreateDepartmentInput!): Department!
+  updateDepartment(id: ID!, input: UpdateDepartmentInput!): Department!
+  deleteDepartment(id: ID!): Boolean!
+  createLocation(input: CreateLocationInput!): Location!
+  updateLocation(id: ID!, input: UpdateLocationInput!): Location!
+  deleteLocation(id: ID!): Boolean!
+
+  # Webhooks
+  createWebhook(input: CreateWebhookInput!): Webhook!
+  updateWebhook(id: ID!, input: UpdateWebhookInput!): Webhook!
+  deleteWebhook(id: ID!): Boolean!
+}

@@ -19,6 +19,8 @@ apis:
         type: OpenAPI
       - url: asyncapi/brex-webhooks-asyncapi.yml
         type: AsyncAPI
+      - url: graphql/brex-graphql.md
+        type: GraphQL
     description: The budgets API lets you manage your Brex Budgets and Spend Limits.
 name: Brex
 tags:
