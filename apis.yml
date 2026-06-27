@@ -5,7 +5,7 @@ common:
     url: https://github.com/brexhq
   - type: LinkedIn
     url: https://www.linkedin.com/company/brexhq
-  - type: LLMsTxt
+  - type: LlmsText
     url: https://developer.brex.com/llms.txt
 apis:
   - aid: brex:brex
