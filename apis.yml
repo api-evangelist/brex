@@ -1,6 +1,10 @@
 aid: brex
 url: https://raw.githubusercontent.com/api-search/brex/refs/heads/main/apis.yml
 common:
+  - type: DomainSecurity
+    url: security/brex-domain-security.yml
+  - type: Authentication
+    url: authentication/brex-authentication.yml
   - type: GitHubOrganization
     url: https://github.com/brexhq
   - type: LinkedIn
