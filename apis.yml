@@ -1,6 +1,8 @@
 aid: brex
 url: https://raw.githubusercontent.com/api-search/brex/refs/heads/main/apis.yml
 common:
+  - type: AgenticAccess
+    url: agentic-access/brex-agentic-access.yml
   - type: DomainSecurity
     url: security/brex-domain-security.yml
   - type: Authentication
