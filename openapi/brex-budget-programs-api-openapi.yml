@@ -1,0 +1,70 @@
+openapi: 3.1.0
+info:
+  title: Brex Budgets Budget Programs API
+  version: '1.0'
+  description: Minimal OpenAPI 3.1 description of the Brex Budgets and Spend Limits API, derived from the public Brex developer documentation. Covers v1 and v2 budgets, spend limits, and budget programs resources.
+  x-generated-from: https://developer.brex.com/openapi/budgets_api/
+  x-generated-by: claude-crawl-2026-05-08
+servers:
+- url: https://platform.brexapis.com
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Budget Programs
+paths:
+  /v1/budget_programs:
+    get:
+      tags:
+      - Budget Programs
+      summary: List Budget Programs
+      operationId: listBudgetPrograms
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericListResponse'
+  /v1/budget_programs/{id}:
+    parameters:
+    - $ref: '#/components/parameters/IdParam'
+    get:
+      tags:
+      - Budget Programs
+      summary: Retrieve a Budget Program by ID
+      operationId: getBudgetProgram
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+components:
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    GenericObject:
+      type: object
+      additionalProperties: true
+    GenericListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenericObject'
+        next_cursor:
+          type: string
+      additionalProperties: true
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

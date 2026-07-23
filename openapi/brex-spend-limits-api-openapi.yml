@@ -1,0 +1,121 @@
+openapi: 3.1.0
+info:
+  title: Brex Budgets Budget Programs Spend Limits API
+  version: '1.0'
+  description: Minimal OpenAPI 3.1 description of the Brex Budgets and Spend Limits API, derived from the public Brex developer documentation. Covers v1 and v2 budgets, spend limits, and budget programs resources.
+  x-generated-from: https://developer.brex.com/openapi/budgets_api/
+  x-generated-by: claude-crawl-2026-05-08
+servers:
+- url: https://platform.brexapis.com
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Spend Limits
+paths:
+  /v2/spend_limits:
+    get:
+      tags:
+      - Spend Limits
+      summary: List Spend Limits (v2)
+      operationId: listV2SpendLimits
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericListResponse'
+    post:
+      tags:
+      - Spend Limits
+      summary: Create a Spend Limit (v2)
+      operationId: createV2SpendLimit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenericObject'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /v2/spend_limits/{id}:
+    parameters:
+    - $ref: '#/components/parameters/IdParam'
+    get:
+      tags:
+      - Spend Limits
+      summary: Retrieve a Spend Limit by ID (v2)
+      operationId: getV2SpendLimit
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+    put:
+      tags:
+      - Spend Limits
+      summary: Update a Spend Limit (v2)
+      operationId: updateV2SpendLimit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenericObject'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /v2/spend_limits/{id}/archive:
+    parameters:
+    - $ref: '#/components/parameters/IdParam'
+    post:
+      tags:
+      - Spend Limits
+      summary: Archive a Spend Limit (v2)
+      operationId: archiveV2SpendLimit
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+components:
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    GenericObject:
+      type: object
+      additionalProperties: true
+    GenericListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenericObject'
+        next_cursor:
+          type: string
+      additionalProperties: true
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

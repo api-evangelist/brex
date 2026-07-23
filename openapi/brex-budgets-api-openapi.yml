@@ -1,26 +1,22 @@
 openapi: 3.1.0
 info:
-  title: Brex Budgets API
-  version: "1.0"
-  description: >-
-    Minimal OpenAPI 3.1 description of the Brex Budgets and Spend Limits API,
-    derived from the public Brex developer documentation. Covers v1 and v2
-    budgets, spend limits, and budget programs resources.
+  title: Brex Budget Programs Budgets API
+  version: '1.0'
+  description: Minimal OpenAPI 3.1 description of the Brex Budgets and Spend Limits API, derived from the public Brex developer documentation. Covers v1 and v2 budgets, spend limits, and budget programs resources.
   x-generated-from: https://developer.brex.com/openapi/budgets_api/
   x-generated-by: claude-crawl-2026-05-08
 servers:
-  - url: https://platform.brexapis.com
-    description: Production
+- url: https://platform.brexapis.com
+  description: Production
 security:
-  - bearerAuth: []
+- bearerAuth: []
 tags:
-  - name: Budgets
-  - name: Spend Limits
-  - name: Budget Programs
+- name: Budgets
 paths:
   /v1/budgets:
     get:
-      tags: [Budgets]
+      tags:
+      - Budgets
       summary: List Spend Limits (v1)
       operationId: listV1Budgets
       responses:
@@ -31,7 +27,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericListResponse'
     post:
-      tags: [Budgets]
+      tags:
+      - Budgets
       summary: Create a Spend Limit (v1)
       operationId: createV1Budget
       requestBody:
@@ -49,9 +46,10 @@ paths:
                 $ref: '#/components/schemas/GenericObject'
   /v1/budgets/{id}:
     parameters:
-      - $ref: '#/components/parameters/IdParam'
+    - $ref: '#/components/parameters/IdParam'
     get:
-      tags: [Budgets]
+      tags:
+      - Budgets
       summary: Retrieve a Spend Limit by ID (v1)
       operationId: getV1Budget
       responses:
@@ -62,7 +60,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericObject'
     put:
-      tags: [Budgets]
+      tags:
+      - Budgets
       summary: Update a Spend Limit (v1)
       operationId: updateV1Budget
       requestBody:
@@ -80,9 +79,10 @@ paths:
                 $ref: '#/components/schemas/GenericObject'
   /v1/budgets/{id}/archive:
     parameters:
-      - $ref: '#/components/parameters/IdParam'
+    - $ref: '#/components/parameters/IdParam'
     post:
-      tags: [Budgets]
+      tags:
+      - Budgets
       summary: Archive a Spend Limit (v1)
       operationId: archiveV1Budget
       responses:
@@ -92,35 +92,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GenericObject'
-  /v1/budget_programs:
-    get:
-      tags: [Budget Programs]
-      summary: List Budget Programs
-      operationId: listBudgetPrograms
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericListResponse'
-  /v1/budget_programs/{id}:
-    parameters:
-      - $ref: '#/components/parameters/IdParam'
-    get:
-      tags: [Budget Programs]
-      summary: Retrieve a Budget Program by ID
-      operationId: getBudgetProgram
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
   /v2/budgets:
     get:
-      tags: [Budgets]
+      tags:
+      - Budgets
       summary: List Budgets (v2)
       operationId: listV2Budgets
       responses:
@@ -131,7 +106,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericListResponse'
     post:
-      tags: [Budgets]
+      tags:
+      - Budgets
       summary: Create a Budget (v2)
       operationId: createV2Budget
       requestBody:
@@ -149,9 +125,10 @@ paths:
                 $ref: '#/components/schemas/GenericObject'
   /v2/budgets/{id}:
     parameters:
-      - $ref: '#/components/parameters/IdParam'
+    - $ref: '#/components/parameters/IdParam'
     get:
-      tags: [Budgets]
+      tags:
+      - Budgets
       summary: Retrieve a Budget by ID (v2)
       operationId: getV2Budget
       responses:
@@ -162,7 +139,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericObject'
     put:
-      tags: [Budgets]
+      tags:
+      - Budgets
       summary: Update a Budget (v2)
       operationId: updateV2Budget
       requestBody:
@@ -180,9 +158,10 @@ paths:
                 $ref: '#/components/schemas/GenericObject'
   /v2/budgets/{id}/archive:
     parameters:
-      - $ref: '#/components/parameters/IdParam'
+    - $ref: '#/components/parameters/IdParam'
     post:
-      tags: [Budgets]
+      tags:
+      - Budgets
       summary: Archive a Budget (v2)
       operationId: archiveV2Budget
       responses:
@@ -192,86 +171,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GenericObject'
-  /v2/spend_limits:
-    get:
-      tags: [Spend Limits]
-      summary: List Spend Limits (v2)
-      operationId: listV2SpendLimits
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericListResponse'
-    post:
-      tags: [Spend Limits]
-      summary: Create a Spend Limit (v2)
-      operationId: createV2SpendLimit
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GenericObject'
-      responses:
-        '200':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
-  /v2/spend_limits/{id}:
-    parameters:
-      - $ref: '#/components/parameters/IdParam'
-    get:
-      tags: [Spend Limits]
-      summary: Retrieve a Spend Limit by ID (v2)
-      operationId: getV2SpendLimit
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
-    put:
-      tags: [Spend Limits]
-      summary: Update a Spend Limit (v2)
-      operationId: updateV2SpendLimit
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GenericObject'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
-  /v2/spend_limits/{id}/archive:
-    parameters:
-      - $ref: '#/components/parameters/IdParam'
-    post:
-      tags: [Spend Limits]
-      summary: Archive a Spend Limit (v2)
-      operationId: archiveV2SpendLimit
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
   parameters:
     IdParam:
       name: id
@@ -293,3 +193,8 @@ components:
         next_cursor:
           type: string
       additionalProperties: true
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
