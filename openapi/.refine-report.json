@@ -1,0 +1,18 @@
+{
+  "provider": "brex",
+  "sources": [
+    "brex-budget-programs-api-openapi.yml",
+    "brex-budgets-api-openapi.yml",
+    "brex-spend-limits-api-openapi.yml"
+  ],
+  "outputs": [
+    "brex-budget-programs-api-openapi.yml",
+    "brex-budgets-api-openapi.yml",
+    "brex-spend-limits-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
