@@ -23,8 +23,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/brex-budget-programs-api-openapi.yml
-  - type: Documentation
-    url: ' https://developer.brex.com/openapi/budgets_api/'
   - type: AsyncAPI
     url: asyncapi/brex-webhooks-asyncapi.yml
   - type: GraphQL
@@ -38,8 +36,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/brex-budgets-api-openapi.yml
-  - type: Documentation
-    url: ' https://developer.brex.com/openapi/budgets_api/'
   - type: AsyncAPI
     url: asyncapi/brex-webhooks-asyncapi.yml
   - type: GraphQL
@@ -53,8 +49,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/brex-spend-limits-api-openapi.yml
-  - type: Documentation
-    url: ' https://developer.brex.com/openapi/budgets_api/'
   - type: AsyncAPI
     url: asyncapi/brex-webhooks-asyncapi.yml
   - type: GraphQL
@@ -67,6 +61,17 @@ tags:
   - Reimbursements
   - Spending
 kind: contract
+deliveryModel:
+  model: unknown
+  open_source: false
+  commercial: false
+  callable_host: true
+  label: Delivery model not determined — needs a product licence on record
+  confidence: low
+  source:
+  - openapi
+  generated: '2026-08-11'
+  method: derived
 accessModel:
   pricing: freemium
   onboarding: self-serve
