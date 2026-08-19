@@ -1,0 +1,53 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Brex Budgets Budget Programs API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Budget Programs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Budget Programs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://platform.brexapis.com/v1/budget_programs"
+          },
+          "docs": "List Budget Programs"
+        },
+        {
+          "info": {
+            "name": "Retrieve a Budget Program by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://platform.brexapis.com/v1/budget_programs/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve a Budget Program by ID"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
