@@ -58,6 +58,12 @@ tags:
   - Bill Pay
   - Corporate Cards
   - Expenses
+  - Reimbursement
+  - Spending
+tags_raw:
+  - Bill Pay
+  - Corporate Cards
+  - Expenses
   - Reimbursements
   - Spending
 kind: contract
