@@ -17,7 +17,7 @@ apis:
 - aid: brex:brex-budget-programs-api
   name: Brex Budget Programs API
   description: The Budget Programs API from Brex — 2 operation(s) for budget programs.
-  humanURL: ' https://developer.brex.com/openapi/budgets_api/'
+  humanURL: https://developer.brex.com/openapi/budgets_api/
   tags:
   - Budget Programs
   properties:
@@ -25,12 +25,10 @@ apis:
     url: openapi/brex-budget-programs-api-openapi.yml
   - type: AsyncAPI
     url: asyncapi/brex-webhooks-asyncapi.yml
-  - type: GraphQL
-    url: graphql/brex-graphql.md
 - aid: brex:brex-budgets-api
   name: Brex Budgets API
   description: The Budgets API from Brex — 6 operation(s) for budgets.
-  humanURL: ' https://developer.brex.com/openapi/budgets_api/'
+  humanURL: https://developer.brex.com/openapi/budgets_api/
   tags:
   - Budgets
   properties:
@@ -38,12 +36,10 @@ apis:
     url: openapi/brex-budgets-api-openapi.yml
   - type: AsyncAPI
     url: asyncapi/brex-webhooks-asyncapi.yml
-  - type: GraphQL
-    url: graphql/brex-graphql.md
 - aid: brex:brex-spend-limits-api
   name: Brex Spend Limits API
   description: The Spend Limits API from Brex — 3 operation(s) for spend limits.
-  humanURL: ' https://developer.brex.com/openapi/budgets_api/'
+  humanURL: https://developer.brex.com/openapi/budgets_api/
   tags:
   - Spend Limits
   properties:
@@ -51,8 +47,6 @@ apis:
     url: openapi/brex-spend-limits-api-openapi.yml
   - type: AsyncAPI
     url: asyncapi/brex-webhooks-asyncapi.yml
-  - type: GraphQL
-    url: graphql/brex-graphql.md
 name: Brex
 tags:
   - Bill Pay
@@ -60,12 +54,14 @@ tags:
   - Expenses
   - Reimbursement
   - Spending
+  - Accounting
 tags_raw:
   - Bill Pay
   - Corporate Cards
   - Expenses
   - Reimbursements
   - Spending
+  - Accounting
 kind: contract
 deliveryModel:
   model: unknown
