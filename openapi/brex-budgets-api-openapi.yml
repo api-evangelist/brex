@@ -172,13 +172,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericObject'
 components:
-  parameters:
-    IdParam:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
   schemas:
     GenericListResponse:
       type: object
@@ -193,6 +186,13 @@ components:
     GenericObject:
       type: object
       additionalProperties: true
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
   securitySchemes:
     bearerAuth:
       type: http
