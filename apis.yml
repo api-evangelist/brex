@@ -1,6 +1,12 @@
 aid: brex
 url: https://raw.githubusercontent.com/api-search/brex/refs/heads/main/apis.yml
 common:
+  - type: Plans
+    url: plans/brex-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/brex-rate-limits.yml
+  - type: FinOps
+    url: finops/brex-finops.yml
   - type: CapabilityMap
     url: capabilities/brex-capability-edges.yml
     name: Brex Business Capability Map
