@@ -1,0 +1,256 @@
+openapi: 3.2.0
+info:
+  title: Team Departments API
+  description: The team API lets you manage users, departments, locations, and cards.
+  contact:
+    name: Admin
+    url: https://brex.com
+    email: developer-support@brex.com
+  version: '1.0'
+  x-logo:
+    altText: Brex Logo
+    url: https://www.brex.com/logo.png
+servers:
+- url: https://api.brex.com
+  description: Production
+- url: https://api-staging.brex.com
+  description: 'Staging (Note: This is not a sandbox. It will not work with customer tokens.)'
+security:
+- OAuth2: []
+tags:
+- name: Departments
+  description: Endpoints for department management.
+paths:
+  /v2/departments:
+    get:
+      tags:
+      - Departments
+      summary: List departments
+      description: This endpoint lists all departments.
+      operationId: listDepartments
+      parameters:
+      - name: cursor
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: limit
+        in: query
+        schema:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      - name: name
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+      responses:
+        '200':
+          description: listDepartments 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_DepartmentResponse_'
+      security:
+      - OAuth2:
+        - departments.readonly
+      - OAuth2:
+        - departments
+    post:
+      tags:
+      - Departments
+      summary: Create department
+      description: This endpoint creates a new department
+      operationId: createDepartment
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        schema:
+          type:
+          - string
+          - 'null'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDepartmentRequest'
+        required: true
+      responses:
+        '200':
+          description: createDepartment 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DepartmentResponse'
+      security:
+      - OAuth2:
+        - departments
+  /v2/departments/{id}:
+    get:
+      tags:
+      - Departments
+      summary: Get department
+      description: This endpoint gets a department by ID.
+      operationId: getDepartmentById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: getDepartmentById 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DepartmentResponse'
+      security:
+      - OAuth2:
+        - departments.readonly
+      - OAuth2:
+        - departments
+    put:
+      tags:
+      - Departments
+      summary: Update department
+      description: This endpoint updates a department by ID. Only the fields present in the request body are changed.
+      operationId: updateDepartment
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Idempotency-Key
+        in: header
+        schema:
+          type:
+          - string
+          - 'null'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDepartmentRequest'
+        required: true
+      responses:
+        '200':
+          description: updateDepartment 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DepartmentResponse'
+      security:
+      - OAuth2:
+        - departments
+    delete:
+      tags:
+      - Departments
+      summary: Delete department
+      description: This endpoint deletes a department by ID. A department cannot be deleted while users are still assigned to it or while it is used as a filter on an active group.
+      operationId: deleteDepartment
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: deleteDepartment 200 response
+      security:
+      - OAuth2:
+        - departments
+components:
+  schemas:
+    CreateDepartmentRequest:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+          description: Name of the department
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of the department
+    Page_DepartmentResponse_:
+      required:
+      - items
+      type: object
+      properties:
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepartmentResponse'
+    UpdateDepartmentRequest:
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type:
+          - string
+          - 'null'
+          description: Name of the department. Cannot be blank when supplied.
+          maxLength: 255
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of the department. Pass null or an empty string to clear it.
+          maxLength: 255
+    DepartmentResponse:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          description: Name of the department
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of the department
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: OAuth2 security scheme
+      flows:
+        authorizationCode:
+          authorizationUrl: https://accounts-api.brex.com/oauth2/default/v1/authorize
+          tokenUrl: https://accounts-api.brex.com/oauth2/default/v1/token
+          scopes:
+            openid: openid
+            offline_access: offline access
+            users.readonly: View user data
+            users: View and manage user data
+            locations.readonly: View location data
+            locations: View and manage location data
+            departments.readonly: View department data
+            departments: View and manage department data
+            titles: View and manage title data
+            titles.readonly: View title data
+            cost_centers: View and manage cost center data
+            cost_centers.readonly: View cost center data
+            cards: View and manage card data
+            cards.readonly: View card data
+            cards.pan: View and Send card number data
+            legal_entities: View and manage legal entities
+            legal_entities.readonly: View legal entities
+x-explorer-enabled: false

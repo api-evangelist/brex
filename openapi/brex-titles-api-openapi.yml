@@ -1,0 +1,240 @@
+openapi: 3.2.0
+info:
+  title: Team Titles API
+  description: The team API lets you manage users, departments, locations, and cards.
+  contact:
+    name: Admin
+    url: https://brex.com
+    email: developer-support@brex.com
+  version: '1.0'
+  x-logo:
+    altText: Brex Logo
+    url: https://www.brex.com/logo.png
+servers:
+- url: https://api.brex.com
+  description: Production
+- url: https://api-staging.brex.com
+  description: 'Staging (Note: This is not a sandbox. It will not work with customer tokens.)'
+security:
+- OAuth2: []
+tags:
+- name: Titles
+  description: Endpoints for title management.
+paths:
+  /v2/titles:
+    get:
+      tags:
+      - Titles
+      summary: List titles
+      description: This endpoint lists all titles.
+      operationId: listTitles
+      parameters:
+      - name: cursor
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: limit
+        in: query
+        schema:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      - name: name
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+      responses:
+        '200':
+          description: listTitles 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_TitleResponse_'
+      security:
+      - OAuth2:
+        - titles.readonly
+      - OAuth2:
+        - titles
+    post:
+      tags:
+      - Titles
+      summary: Create title
+      description: This endpoint creates a new title
+      operationId: createTitle
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        schema:
+          type:
+          - string
+          - 'null'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTitleRequest'
+        required: true
+      responses:
+        '200':
+          description: createTitle 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TitleResponse'
+      security:
+      - OAuth2:
+        - titles
+  /v2/titles/{id}:
+    get:
+      tags:
+      - Titles
+      summary: Get title
+      description: This endpoint gets a title by ID.
+      operationId: getTitleById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: getTitleById 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TitleResponse'
+      security:
+      - OAuth2:
+        - titles.readonly
+      - OAuth2:
+        - titles
+    put:
+      tags:
+      - Titles
+      summary: Update title
+      description: This endpoint updates a title by ID. Only the fields present in the request body are changed. The request must contain at least one field to update.
+      operationId: updateTitle
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Idempotency-Key
+        in: header
+        schema:
+          type:
+          - string
+          - 'null'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTitleRequest'
+        required: true
+      responses:
+        '200':
+          description: updateTitle 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TitleResponse'
+      security:
+      - OAuth2:
+        - titles
+    delete:
+      tags:
+      - Titles
+      summary: Delete title
+      description: This endpoint deletes a title by ID. A title cannot be deleted while users are still assigned to it or while it is used as a filter on an active group.
+      operationId: deleteTitle
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: deleteTitle 200 response
+      security:
+      - OAuth2:
+        - titles
+components:
+  schemas:
+    CreateTitleRequest:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+          description: Name of the title
+    TitleResponse:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          description: Name of the title
+    UpdateTitleRequest:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+          description: Name of the title. Cannot be blank or null when supplied.
+          maxLength: 255
+    Page_TitleResponse_:
+      required:
+      - items
+      type: object
+      properties:
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TitleResponse'
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: OAuth2 security scheme
+      flows:
+        authorizationCode:
+          authorizationUrl: https://accounts-api.brex.com/oauth2/default/v1/authorize
+          tokenUrl: https://accounts-api.brex.com/oauth2/default/v1/token
+          scopes:
+            openid: openid
+            offline_access: offline access
+            users.readonly: View user data
+            users: View and manage user data
+            locations.readonly: View location data
+            locations: View and manage location data
+            departments.readonly: View department data
+            departments: View and manage department data
+            titles: View and manage title data
+            titles.readonly: View title data
+            cost_centers: View and manage cost center data
+            cost_centers.readonly: View cost center data
+            cards: View and manage card data
+            cards.readonly: View card data
+            cards.pan: View and Send card number data
+            legal_entities: View and manage legal entities
+            legal_entities.readonly: View legal entities
+x-explorer-enabled: false

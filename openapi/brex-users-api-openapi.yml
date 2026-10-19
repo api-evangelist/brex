@@ -1,0 +1,1074 @@
+openapi: 3.2.0
+info:
+  title: Team Users API
+  description: The team API lets you manage users, departments, locations, and cards.
+  contact:
+    name: Admin
+    url: https://brex.com
+    email: developer-support@brex.com
+  version: '1.0'
+  x-logo:
+    altText: Brex Logo
+    url: https://www.brex.com/logo.png
+servers:
+- url: https://api.brex.com
+  description: Production
+- url: https://api-staging.brex.com
+  description: 'Staging (Note: This is not a sandbox. It will not work with customer tokens.)'
+security:
+- OAuth2: []
+tags:
+- name: Users
+  description: Endpoints for user management.
+paths:
+  /v2/users:
+    get:
+      tags:
+      - Users
+      summary: List users
+      description: 'This endpoint lists all users.
+
+
+        Results can be narrowed with the filter query parameters below. Values within a single
+
+        filter are OR-ed, and separate filters are AND-ed together.
+
+
+        Filters that accept multiple values take them either as a comma-separated list or as a repeated
+
+        parameter: `?status[]=ACTIVE,INVITED` and `?status[]=ACTIVE&status[]=INVITED` are equivalent.
+
+
+        The legacy singular `email` and `remote_display_id` parameters perform an exact lookup that returns
+
+        at most one user, and cannot be combined with the filters above.'
+      operationId: listUsers
+      parameters:
+      - name: cursor
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: limit
+        in: query
+        schema:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      - name: email
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          description: Currently only support filtering by a single email or a single remote_display_id.
+      - name: remote_display_id
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          description: Currently only support filtering by a single email or a single remote_display_id.
+      - name: name
+        in: query
+        description: Fuzzy, case-insensitive match against the user's first name, last name and email.
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: email[]
+        in: query
+        description: Filter by email address. Accepts several emails, e.g. `?email[]=a@example.com,b@example.com`.
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      - name: status[]
+        in: query
+        description: Filter by user status. Accepts several statuses, e.g. `?status[]=ACTIVE,INVITED`. By default, deleted and archived users are excluded.
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            enum:
+            - INVITED
+            - ACTIVE
+            - DISABLED
+            - PENDING_ACTIVATION
+            - INACTIVE
+            - ARCHIVED
+      - name: manager_id[]
+        in: query
+        description: Filter by the user_id of the manager. Accepts a list of managers.
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      - name: department_id[]
+        in: query
+        description: Filter by department_id. Accepts a list of departments.
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      - name: location_id[]
+        in: query
+        description: Filter by location_id. Accepts a list of locations.
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      - name: title_id[]
+        in: query
+        description: Filter by title_id. Accepts a list of titles.
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      - name: cost_center_id[]
+        in: query
+        description: Filter by cost_center_id. Accepts a list of cost centers.
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      - name: legal_entity_id[]
+        in: query
+        description: Filter by legal_entity_id. Accepts a list of legal entities.
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      - name: load_custom_fields
+        in: query
+        description: Load custom field values for the users.
+        schema:
+          type:
+          - boolean
+          - 'null'
+      - name: custom_field[]
+        in: query
+        description: Filter by custom field value, given as `key:option_id`. Accepts a list of custom fields. Values within a single key are OR-ed, and separate keys are AND-ed together.
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      responses:
+        '200':
+          description: listUsers 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_UserResponse_'
+      security:
+      - OAuth2:
+        - users.readonly
+      - OAuth2:
+        - users
+    post:
+      tags:
+      - Users
+      summary: Invite user
+      description: 'This endpoint invites a new user as an employee.
+
+        To update user''s role, check out this article.'
+      operationId: createUser
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        schema:
+          type:
+          - string
+          - 'null'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+        required: true
+      responses:
+        '200':
+          description: createUser 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+      security:
+      - OAuth2:
+        - users
+  /v2/users/create:
+    post:
+      tags:
+      - Users
+      summary: Create user
+      description: 'This endpoint creates a new user as an employee without inviting them, leaving the user `INACTIVE`.
+
+        Use it to load your team into Brex ahead of time; invite them later with
+
+        Invite user, on the Dashboard, or by using auto-invite rules.
+
+
+        The user is assigned to `legal_entity_id` when provided, and to your account''s default legal entity otherwise.'
+      operationId: addUser
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        schema:
+          type:
+          - string
+          - 'null'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddUserRequest'
+        required: true
+      responses:
+        '200':
+          description: addUser 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+      security:
+      - OAuth2:
+        - users
+  /v2/users/me:
+    get:
+      tags:
+      - Users
+      summary: Get current user
+      description: This endpoint returns the user associated with the OAuth2 access token.
+      operationId: getMe
+      parameters:
+      - name: load_custom_fields
+        in: query
+        description: Load custom field values for the users.
+        schema:
+          type:
+          - boolean
+          - 'null'
+      responses:
+        '200':
+          description: getMe 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+      security:
+      - OAuth2:
+        - users.readonly
+      - OAuth2:
+        - users
+  /v2/users/{id}:
+    get:
+      tags:
+      - Users
+      summary: Get user
+      description: This endpoint gets a user by ID.
+      operationId: getUserById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: load_custom_fields
+        in: query
+        description: Load custom field values for the users.
+        schema:
+          type:
+          - boolean
+          - 'null'
+      responses:
+        '200':
+          description: getUserById 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+      security:
+      - OAuth2:
+        - users.readonly
+      - OAuth2:
+        - users
+    put:
+      tags:
+      - Users
+      summary: Update user
+      description: This endpoint updates a user. Any parameters not provided will be left unchanged.
+      operationId: updateUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Idempotency-Key
+        in: header
+        schema:
+          type:
+          - string
+          - 'null'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+        required: true
+      responses:
+        '200':
+          description: updateUser 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+      security:
+      - OAuth2:
+        - users
+components:
+  schemas:
+    EnumListValue:
+      title: Enum list value
+      required:
+      - data_type
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            description: The data of the custom field.
+            format: enum
+        data_type:
+          type: string
+          description: The type of the custom field data.
+          enum:
+          - ENUM
+      description: Enum list value for a custom field
+      allOf:
+      - $ref: '#/components/schemas/CustomField.ValueWrapper.MultipleValueWrapper'
+      - $ref: '#/components/schemas/CustomField.ValueWrapper'
+    UserResponse:
+      required:
+      - email
+      - first_name
+      - id
+      - last_name
+      type: object
+      properties:
+        id:
+          type: string
+        first_name:
+          type: string
+          description: First name of the user
+        last_name:
+          type: string
+          description: Last name of the user
+        email:
+          type: string
+          description: Email address of the user
+        status:
+          allOf:
+          - $ref: '#/components/schemas/UserStatus'
+        manager_id:
+          type:
+          - string
+          - 'null'
+          description: The user id of the manager of this user
+        department_id:
+          type:
+          - string
+          - 'null'
+        location_id:
+          type:
+          - string
+          - 'null'
+        title_id:
+          type:
+          - string
+          - 'null'
+        cost_center_id:
+          type:
+          - string
+          - 'null'
+        legal_entity_id:
+          type:
+          - string
+          - 'null'
+        metadata:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: 'The metadata or customized attributes of the user. Maximum number of entries: 100'
+        remote_display_id:
+          type:
+          - string
+          - 'null'
+          description: Identifier that is displayed on the IDP or HR system, eg, if OKTA identifies you as user xyz
+        custom_fields:
+          type:
+          - array
+          - 'null'
+          description: A list of custom field values associated with the user.
+          items:
+            $ref: '#/components/schemas/CustomField'
+    CustomField.ValueWrapper.SingleValueWrapper:
+      required:
+      - value_type
+      type: object
+      properties:
+        value_type:
+          allOf:
+          - $ref: '#/components/schemas/CustomFieldValueType'
+          - description: The type of the custom field value.
+      description: Single value wrapper for custom fields
+      allOf:
+      - $ref: '#/components/schemas/CustomField.ValueWrapper'
+    OptionString:
+      type: object
+      properties:
+        option_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier when custom field data is of type option string.
+        option_label:
+          type:
+          - string
+          - 'null'
+          description: The label when custom field data is of type option string.
+      description: Option string fields have a label and a identifier.
+    TimestampValue:
+      title: Timestamp value
+      required:
+      - data_type
+      type: object
+      properties:
+        data:
+          type:
+          - string
+          - 'null'
+          description: The data of the custom field.
+          format: date-time
+        data_type:
+          type: string
+          description: The type of the custom field data.
+          enum:
+          - TIMESTAMP
+      description: Timestamp value for a custom field
+      allOf:
+      - $ref: '#/components/schemas/CustomField.ValueWrapper.SingleValueWrapper'
+      - $ref: '#/components/schemas/CustomField.ValueWrapper'
+    TimestampListValue:
+      title: Timestamp list value
+      required:
+      - data_type
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            description: The data of the custom field.
+            format: date-time
+        data_type:
+          type: string
+          description: The type of the custom field data.
+          enum:
+          - TIMESTAMP
+      description: Timestamp list value for a custom field
+      allOf:
+      - $ref: '#/components/schemas/CustomField.ValueWrapper.MultipleValueWrapper'
+      - $ref: '#/components/schemas/CustomField.ValueWrapper'
+    DecimalListValue:
+      title: Decimal list value
+      required:
+      - data_type
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            type: number
+            description: The data of the custom field.
+        data_type:
+          type: string
+          description: The type of the custom field data.
+          enum:
+          - DECIMAL
+      description: Decimal list value for a custom field
+      allOf:
+      - $ref: '#/components/schemas/CustomField.ValueWrapper.MultipleValueWrapper'
+      - $ref: '#/components/schemas/CustomField.ValueWrapper'
+    DateListValue:
+      title: Date list value
+      required:
+      - data_type
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            description: The data of the custom field.
+            format: date
+        data_type:
+          type: string
+          description: The type of the custom field data.
+          enum:
+          - DATE
+      description: Date list value for a custom field
+      allOf:
+      - $ref: '#/components/schemas/CustomField.ValueWrapper.MultipleValueWrapper'
+      - $ref: '#/components/schemas/CustomField.ValueWrapper'
+    StringListValue:
+      title: String list value
+      required:
+      - data_type
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            description: The data of the custom field.
+        data_type:
+          type: string
+          description: The type of the custom field data.
+          enum:
+          - STRING
+      description: String list value for a custom field
+      allOf:
+      - $ref: '#/components/schemas/CustomField.ValueWrapper.MultipleValueWrapper'
+      - $ref: '#/components/schemas/CustomField.ValueWrapper'
+    CustomField.ValueWrapper.MultipleValueWrapper:
+      required:
+      - value_type
+      type: object
+      properties:
+        value_type:
+          allOf:
+          - $ref: '#/components/schemas/CustomFieldValueType'
+          - description: The type of the custom field value.
+      description: Multiple value wrapper for custom fields
+      allOf:
+      - $ref: '#/components/schemas/CustomField.ValueWrapper'
+    DecimalValue:
+      title: Decimal value
+      required:
+      - data_type
+      type: object
+      properties:
+        data:
+          type:
+          - number
+          - 'null'
+          description: The data of the custom field.
+        data_type:
+          type: string
+          description: The type of the custom field data.
+          enum:
+          - DECIMAL
+      description: Decimal value for a custom field
+      allOf:
+      - $ref: '#/components/schemas/CustomField.ValueWrapper.SingleValueWrapper'
+      - $ref: '#/components/schemas/CustomField.ValueWrapper'
+    AddUserRequest:
+      required:
+      - email
+      - first_name
+      - last_name
+      type: object
+      properties:
+        first_name:
+          minLength: 1
+          type: string
+        last_name:
+          minLength: 1
+          type: string
+        email:
+          type: string
+          format: email
+        manager_id:
+          type:
+          - string
+          - 'null'
+        department_id:
+          type:
+          - string
+          - 'null'
+        location_id:
+          type:
+          - string
+          - 'null'
+        title_id:
+          type:
+          - string
+          - 'null'
+        cost_center_id:
+          type:
+          - string
+          - 'null'
+        legal_entity_id:
+          type:
+          - string
+          - 'null'
+          description: The legal entity to assign the user to. Defaults to the account's default legal entity.
+        metadata:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: 'The metadata or customized attributes of the user. Maximum number of entries: 100'
+    Money:
+      required:
+      - amount
+      type: object
+      properties:
+        amount:
+          type: integer
+          description: The amount of money, in the smallest denomination of the currency indicated by currency. For example, when currency is USD, amount is in cents.
+          format: int64
+          example: 700
+        currency:
+          type:
+          - string
+          - 'null'
+          description: The type of currency, in ISO 4217 format.
+          example: USD
+          default: USD
+      description: '
+
+        Money fields can be signed or unsigned. Fields are signed (an unsigned value will be interpreted as positive). The amount of money will be represented in the smallest denomination
+
+        of the currency indicated. For example, USD 7.00 will be represented in cents with an amount of 700.
+
+        '
+    MoneyValue:
+      title: Money value
+      required:
+      - data_type
+      type: object
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Money'
+          - description: The data of the custom field.
+        data_type:
+          type: string
+          description: The type of the custom field data.
+          enum:
+          - MONEY
+      description: Money value for a custom field
+      allOf:
+      - $ref: '#/components/schemas/CustomField.ValueWrapper.SingleValueWrapper'
+      - $ref: '#/components/schemas/CustomField.ValueWrapper'
+    DateValue:
+      title: Date value
+      required:
+      - data_type
+      type: object
+      properties:
+        data:
+          type:
+          - string
+          - 'null'
+          description: The data of the custom field.
+          format: date
+        data_type:
+          type: string
+          description: The type of the custom field data.
+          enum:
+          - DATE
+      description: Date value for a custom field
+      allOf:
+      - $ref: '#/components/schemas/CustomField.ValueWrapper.SingleValueWrapper'
+      - $ref: '#/components/schemas/CustomField.ValueWrapper'
+    BooleanListValue:
+      title: Boolean list value
+      required:
+      - data_type
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            type: boolean
+            description: The data of the custom field.
+        data_type:
+          type: string
+          description: The type of the custom field data.
+          enum:
+          - BOOLEAN
+      description: Boolean list value for a custom field
+      allOf:
+      - $ref: '#/components/schemas/CustomField.ValueWrapper.MultipleValueWrapper'
+      - $ref: '#/components/schemas/CustomField.ValueWrapper'
+    CustomField.ValueWrapper:
+      required:
+      - data_type
+      - value_type
+      type: object
+      properties:
+        value_type:
+          allOf:
+          - $ref: '#/components/schemas/CustomFieldValueType'
+          - description: The type of the custom field value.
+        data_type:
+          allOf:
+          - $ref: '#/components/schemas/CustomFieldDataType'
+          - description: The type of the custom field data.
+      description: Base class for custom field values
+    CreateUserRequest:
+      required:
+      - email
+      - first_name
+      - last_name
+      type: object
+      properties:
+        first_name:
+          minLength: 1
+          type: string
+        last_name:
+          minLength: 1
+          type: string
+        email:
+          type: string
+          format: email
+        manager_id:
+          type:
+          - string
+          - 'null'
+        department_id:
+          type:
+          - string
+          - 'null'
+        location_id:
+          type:
+          - string
+          - 'null'
+        title_id:
+          type:
+          - string
+          - 'null'
+        cost_center_id:
+          type:
+          - string
+          - 'null'
+        legal_entity_id:
+          type:
+          - string
+          - 'null'
+        metadata:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: 'The metadata or customized attributes of the user. Maximum number of entries: 100'
+    UpdateUserStatus:
+      type: string
+      description: "\nAcceptable user status for update. The value you send is the status the user ends up in. Only transitions\nthat are legal for the user's current status are accepted; anything else is rejected with a 400.\n\n```\n  ACTIVE   <-->  DISABLED     suspend an active user / unsuspend a suspended one\n  INACTIVE <-->  ARCHIVED     archive an inactive user / restore an archived one\n\n  INVITED   -->  DELETED      withdraw an invitation and delete user\n  INACTIVE  -->  DELETED      delete an inactive user\n```\n"
+      enum:
+      - ACTIVE
+      - DISABLED
+      - ARCHIVED
+      - INACTIVE
+      - DELETED
+    CustomFieldDataType:
+      required:
+      - 'true'
+      type: string
+      description: The type of the custom field data.
+      enum:
+      - STRING
+      - DECIMAL
+      - BOOLEAN
+      - ENUM
+      - TIMESTAMP
+      - DATE
+      - MONEY
+      - OPTION_STRING
+    CustomField:
+      required:
+      - key
+      - value
+      type: object
+      properties:
+        key:
+          type: string
+          description: The key of the custom field.
+        value:
+          allOf:
+          - $ref: '#/components/schemas/CustomField.ValueWrapper'
+          - description: The value of the custom field.
+            oneOf:
+            - $ref: '#/components/schemas/StringValue'
+            - $ref: '#/components/schemas/DecimalValue'
+            - $ref: '#/components/schemas/BooleanValue'
+            - $ref: '#/components/schemas/EnumValue'
+            - $ref: '#/components/schemas/TimestampValue'
+            - $ref: '#/components/schemas/DateValue'
+            - $ref: '#/components/schemas/MoneyValue'
+            - $ref: '#/components/schemas/OptionStringValue'
+            - $ref: '#/components/schemas/StringListValue'
+            - $ref: '#/components/schemas/DecimalListValue'
+            - $ref: '#/components/schemas/BooleanListValue'
+            - $ref: '#/components/schemas/EnumListValue'
+            - $ref: '#/components/schemas/TimestampListValue'
+            - $ref: '#/components/schemas/DateListValue'
+            - $ref: '#/components/schemas/MoneyListValue'
+            - $ref: '#/components/schemas/OptionStringListValue'
+    OptionStringValue:
+      title: Option string value
+      required:
+      - data_type
+      type: object
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/OptionString'
+          - description: The data of the custom field.
+        data_type:
+          type: string
+          description: The type of the custom field data.
+          enum:
+          - OPTION_STRING
+      description: Option string value for a custom field
+      allOf:
+      - $ref: '#/components/schemas/CustomField.ValueWrapper.SingleValueWrapper'
+      - $ref: '#/components/schemas/CustomField.ValueWrapper'
+    UserStatus:
+      type: string
+      description: Status of the user
+      enum:
+      - INVITED
+      - ACTIVE
+      - DISABLED
+      - PENDING_ACTIVATION
+      - INACTIVE
+      - ARCHIVED
+    Page_UserResponse_:
+      required:
+      - items
+      type: object
+      properties:
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserResponse'
+    CustomFieldValueType:
+      required:
+      - 'true'
+      type: string
+      description: The type of the custom field value.
+      enum:
+      - SINGLE_VALUE
+      - LIST
+    EnumValue:
+      title: Enum value
+      required:
+      - data_type
+      type: object
+      properties:
+        data:
+          type:
+          - string
+          - 'null'
+          description: The data of the custom field.
+          format: enum
+        data_type:
+          type: string
+          description: The type of the custom field data.
+          enum:
+          - ENUM
+      description: Enum value for a custom field
+      allOf:
+      - $ref: '#/components/schemas/CustomField.ValueWrapper.SingleValueWrapper'
+      - $ref: '#/components/schemas/CustomField.ValueWrapper'
+    UpdateUserRequest:
+      type: object
+      properties:
+        status:
+          allOf:
+          - $ref: '#/components/schemas/UpdateUserStatus'
+        manager_id:
+          type:
+          - string
+          - 'null'
+          description: The user id of the manager of this user
+        department_id:
+          type:
+          - string
+          - 'null'
+        location_id:
+          type:
+          - string
+          - 'null'
+        title_id:
+          type:
+          - string
+          - 'null'
+        cost_center_id:
+          type:
+          - string
+          - 'null'
+        legal_entity_id:
+          type: string
+          description: The legal entity this user reports into. Cannot be null.
+        metadata:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: 'The metadata or customized attributes of the user. Maximum number of entries: 100'
+    OptionStringListValue:
+      title: Option string list value
+      required:
+      - data_type
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OptionString'
+        data_type:
+          type: string
+          description: The type of the custom field data.
+          enum:
+          - OPTION_STRING
+      description: Option string list value for a custom field
+      allOf:
+      - $ref: '#/components/schemas/CustomField.ValueWrapper.MultipleValueWrapper'
+      - $ref: '#/components/schemas/CustomField.ValueWrapper'
+    BooleanValue:
+      title: Boolean value
+      required:
+      - data_type
+      type: object
+      properties:
+        data:
+          type:
+          - boolean
+          - 'null'
+          description: The data of the custom field.
+        data_type:
+          type: string
+          description: The type of the custom field data.
+          enum:
+          - BOOLEAN
+      description: Boolean value for a custom field
+      allOf:
+      - $ref: '#/components/schemas/CustomField.ValueWrapper.SingleValueWrapper'
+      - $ref: '#/components/schemas/CustomField.ValueWrapper'
+    StringValue:
+      title: String value
+      required:
+      - data_type
+      type: object
+      properties:
+        data:
+          type:
+          - string
+          - 'null'
+          description: The data of the custom field.
+        data_type:
+          type: string
+          description: The type of the custom field data.
+          enum:
+          - STRING
+      description: String value for a custom field
+      allOf:
+      - $ref: '#/components/schemas/CustomField.ValueWrapper.SingleValueWrapper'
+      - $ref: '#/components/schemas/CustomField.ValueWrapper'
+    MoneyListValue:
+      title: Money list value
+      required:
+      - data_type
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Money'
+        data_type:
+          type: string
+          description: The type of the custom field data.
+          enum:
+          - MONEY
+      description: Money list value for a custom field
+      allOf:
+      - $ref: '#/components/schemas/CustomField.ValueWrapper.MultipleValueWrapper'
+      - $ref: '#/components/schemas/CustomField.ValueWrapper'
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: OAuth2 security scheme
+      flows:
+        authorizationCode:
+          authorizationUrl: https://accounts-api.brex.com/oauth2/default/v1/authorize
+          tokenUrl: https://accounts-api.brex.com/oauth2/default/v1/token
+          scopes:
+            openid: openid
+            offline_access: offline access
+            users.readonly: View user data
+            users: View and manage user data
+            locations.readonly: View location data
+            locations: View and manage location data
+            departments.readonly: View department data
+            departments: View and manage department data
+            titles: View and manage title data
+            titles.readonly: View title data
+            cost_centers: View and manage cost center data
+            cost_centers.readonly: View cost center data
+            cards: View and manage card data
+            cards.readonly: View card data
+            cards.pan: View and Send card number data
+            legal_entities: View and manage legal entities
+            legal_entities.readonly: View legal entities
+x-explorer-enabled: false

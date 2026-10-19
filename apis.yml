@@ -56,6 +56,78 @@ apis:
     url: openapi/brex-spend-limits-api-openapi.yml
   - type: AsyncAPI
     url: asyncapi/brex-webhooks-asyncapi.yml
+- aid: brex:brex-cards-api
+  name: Brex Cards API
+  description: Endpoints for card management.
+  humanURL: https://developer.brex.com/openapi/budgets_api/
+  tags:
+  - Cards
+  properties:
+  - type: OpenAPI
+    url: openapi/brex-cards-api-openapi.yml
+- aid: brex:brex-companies-api
+  name: Brex Companies API
+  description: The Companies API from Brex — 1 operation(s) for companies.
+  humanURL: https://developer.brex.com/openapi/budgets_api/
+  tags:
+  - Companies
+  properties:
+  - type: OpenAPI
+    url: openapi/brex-companies-api-openapi.yml
+- aid: brex:brex-cost-centers-api
+  name: Brex Cost Centers API
+  description: Endpoints for cost center management.
+  humanURL: https://developer.brex.com/openapi/budgets_api/
+  tags:
+  - Cost Centers
+  properties:
+  - type: OpenAPI
+    url: openapi/brex-cost-centers-api-openapi.yml
+- aid: brex:brex-departments-api
+  name: Brex Departments API
+  description: Endpoints for department management.
+  humanURL: https://developer.brex.com/openapi/budgets_api/
+  tags:
+  - Departments
+  properties:
+  - type: OpenAPI
+    url: openapi/brex-departments-api-openapi.yml
+- aid: brex:brex-legal-entities-api
+  name: Brex Legal Entities API
+  description: Endpoints for legal entities.
+  humanURL: https://developer.brex.com/openapi/budgets_api/
+  tags:
+  - Legal Entities
+  properties:
+  - type: OpenAPI
+    url: openapi/brex-legal-entities-api-openapi.yml
+- aid: brex:brex-locations-api
+  name: Brex Locations API
+  description: Endpoints for location management.
+  humanURL: https://developer.brex.com/openapi/budgets_api/
+  tags:
+  - Locations
+  properties:
+  - type: OpenAPI
+    url: openapi/brex-locations-api-openapi.yml
+- aid: brex:brex-titles-api
+  name: Brex Titles API
+  description: Endpoints for title management.
+  humanURL: https://developer.brex.com/openapi/budgets_api/
+  tags:
+  - Titles
+  properties:
+  - type: OpenAPI
+    url: openapi/brex-titles-api-openapi.yml
+- aid: brex:brex-users-api
+  name: Brex Users API
+  description: Endpoints for user management.
+  humanURL: https://developer.brex.com/openapi/budgets_api/
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/brex-users-api-openapi.yml
 name: Brex
 tags:
   - Bill Pay

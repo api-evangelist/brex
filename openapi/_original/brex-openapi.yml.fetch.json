@@ -1,0 +1,12 @@
+{
+ "url": "https://developer.brex.com/_bundle/openapi/team_api.yaml?download",
+ "final": "https://developer.brex.com/_bundle/openapi/team_api.yaml?download",
+ "status": 200,
+ "content_type": "application/yaml",
+ "bytes": 77858,
+ "sha256": "76616101e54a7c0f3f0993b2dd6b7aa1dc73b123cf9b903eaf7b36e80f6f8558",
+ "fetched_at": "2026-10-19",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "re-archived: the provider's current document replaced a stale archive (roadmap#793); the old files are in openapi/_superseded/2026-10-19-stale"
+}

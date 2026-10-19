@@ -1,0 +1,237 @@
+openapi: 3.2.0
+info:
+  title: Team Legal Entities API
+  description: The team API lets you manage users, departments, locations, and cards.
+  contact:
+    name: Admin
+    url: https://brex.com
+    email: developer-support@brex.com
+  version: '1.0'
+  x-logo:
+    altText: Brex Logo
+    url: https://www.brex.com/logo.png
+servers:
+- url: https://api.brex.com
+  description: Production
+- url: https://api-staging.brex.com
+  description: 'Staging (Note: This is not a sandbox. It will not work with customer tokens.)'
+security:
+- OAuth2: []
+tags:
+- name: Legal Entities
+  description: Endpoints for legal entities.
+paths:
+  /v2/legal_entities:
+    get:
+      tags:
+      - Legal Entities
+      summary: List legal entities
+      description: List legal entities for the account.
+      operationId: listLegalEntities
+      parameters:
+      - name: cursor
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: limit
+        in: query
+        schema:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      responses:
+        '200':
+          description: listLegalEntities 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_LegalEntity_'
+      security:
+      - OAuth2:
+        - legal_entities
+        - legal_entities.readonly
+  /v2/legal_entities/{id}:
+    get:
+      tags:
+      - Legal Entities
+      summary: Get legal entity
+      description: Get a legal entity by its ID.
+      operationId: getLegalEntity
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: getLegalEntity 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegalEntity'
+      security:
+      - OAuth2:
+        - legal_entities
+        - legal_entities.readonly
+components:
+  schemas:
+    LegalEntityStatus:
+      type: string
+      description: '
+
+        The possible statuses for an entity''s verification in Brex.
+
+        '
+      enum:
+      - UNSUBMITTED
+      - UNVERIFIED
+      - IN_PROGRESS
+      - VERIFIED
+      - REJECTED
+    Page_LegalEntity_:
+      required:
+      - items
+      type: object
+      properties:
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LegalEntity'
+    Address:
+      type: object
+      properties:
+        line1:
+          type:
+          - string
+          - 'null'
+          description: Address line 1, no PO Box.
+        line2:
+          type:
+          - string
+          - 'null'
+          description: Address line 2 (e.g., apartment, suite, unit, or building).
+        city:
+          type:
+          - string
+          - 'null'
+          description: City, district, suburb, town, or village.
+        state:
+          type:
+          - string
+          - 'null'
+          description: For US-addressed the 2-letter State abbreviation. For international-addresses the county, providence, or region.
+        country:
+          type:
+          - string
+          - 'null'
+          description: Two-letter country code (ISO 3166-1 alpha-2).
+        postal_code:
+          type:
+          - string
+          - 'null'
+          description: ZIP or postal code.
+        phone_number:
+          type:
+          - string
+          - 'null'
+          description: Phone number.
+      description: Company business address (must be in the US; no PO box or virtual/forwarding addresses allowed).
+    LegalEntity:
+      title: '
+
+        Legal Entity
+
+        '
+      required:
+      - billingAddress
+      - createdAt
+      - displayName
+      - id
+      - status
+      type: object
+      properties:
+        id:
+          type: string
+          description: '
+
+            The ID of this legal entity.
+
+            '
+        displayName:
+          type: string
+          description: '
+
+            The display name of this legal entity.
+
+            '
+        billingAddress:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          - description: '
+
+              The billing address of this legal entity. Also used as billing address for cards issued to users who belong to this entity.
+
+              '
+        createdAt:
+          type: string
+          description: '
+
+            Timestamp, in UTC, when this legal entity was created.
+
+            '
+          format: date-time
+        status:
+          allOf:
+          - $ref: '#/components/schemas/LegalEntityStatus'
+          - description: '
+
+              The current status of this legal entity.
+
+              '
+        isDefault:
+          type: boolean
+          description: '
+
+            Whether this is the default entity of the account.
+
+            '
+      description: '
+
+        A Brex legal entity.
+
+        '
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: OAuth2 security scheme
+      flows:
+        authorizationCode:
+          authorizationUrl: https://accounts-api.brex.com/oauth2/default/v1/authorize
+          tokenUrl: https://accounts-api.brex.com/oauth2/default/v1/token
+          scopes:
+            openid: openid
+            offline_access: offline access
+            users.readonly: View user data
+            users: View and manage user data
+            locations.readonly: View location data
+            locations: View and manage location data
+            departments.readonly: View department data
+            departments: View and manage department data
+            titles: View and manage title data
+            titles.readonly: View title data
+            cost_centers: View and manage cost center data
+            cost_centers.readonly: View cost center data
+            cards: View and manage card data
+            cards.readonly: View card data
+            cards.pan: View and Send card number data
+            legal_entities: View and manage legal entities
+            legal_entities.readonly: View legal entities
+x-explorer-enabled: false

@@ -1,0 +1,140 @@
+openapi: 3.2.0
+info:
+  title: Team Cost Centers API
+  description: The team API lets you manage users, departments, locations, and cards.
+  contact:
+    name: Admin
+    url: https://brex.com
+    email: developer-support@brex.com
+  version: '1.0'
+  x-logo:
+    altText: Brex Logo
+    url: https://www.brex.com/logo.png
+servers:
+- url: https://api.brex.com
+  description: Production
+- url: https://api-staging.brex.com
+  description: 'Staging (Note: This is not a sandbox. It will not work with customer tokens.)'
+security:
+- OAuth2: []
+tags:
+- name: Cost Centers
+  description: Endpoints for cost center management.
+paths:
+  /v2/cost_centers:
+    get:
+      tags:
+      - Cost Centers
+      summary: List cost centers
+      description: This endpoint lists all cost centers.
+      operationId: listCostCenters
+      parameters:
+      - name: cursor
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+      - name: limit
+        in: query
+        schema:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      - name: name
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+      responses:
+        '200':
+          description: listCostCenters 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_CostCenterResponse_'
+      security:
+      - OAuth2:
+        - cost_centers.readonly
+      - OAuth2:
+        - cost_centers
+  /v2/cost_centers/{id}:
+    get:
+      tags:
+      - Cost Centers
+      summary: Get cost center
+      description: This endpoint gets a cost center by ID.
+      operationId: getCostCenterById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: getCostCenterById 200 response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CostCenterResponse'
+      security:
+      - OAuth2:
+        - cost_centers.readonly
+      - OAuth2:
+        - cost_centers
+components:
+  schemas:
+    CostCenterResponse:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          description: Name of the cost center
+    Page_CostCenterResponse_:
+      required:
+      - items
+      type: object
+      properties:
+        next_cursor:
+          type:
+          - string
+          - 'null'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CostCenterResponse'
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: OAuth2 security scheme
+      flows:
+        authorizationCode:
+          authorizationUrl: https://accounts-api.brex.com/oauth2/default/v1/authorize
+          tokenUrl: https://accounts-api.brex.com/oauth2/default/v1/token
+          scopes:
+            openid: openid
+            offline_access: offline access
+            users.readonly: View user data
+            users: View and manage user data
+            locations.readonly: View location data
+            locations: View and manage location data
+            departments.readonly: View department data
+            departments: View and manage department data
+            titles: View and manage title data
+            titles.readonly: View title data
+            cost_centers: View and manage cost center data
+            cost_centers.readonly: View cost center data
+            cards: View and manage card data
+            cards.readonly: View card data
+            cards.pan: View and Send card number data
+            legal_entities: View and manage legal entities
+            legal_entities.readonly: View legal entities
+x-explorer-enabled: false

@@ -1,9 +1,18 @@
 {
   "provider": "brex",
   "sources": [
+    "_original/brex-openapi.yml",
     "_ae-authored/brex-openapi.yml"
   ],
   "outputs": [
+    "brex-cards-api-openapi.yml",
+    "brex-companies-api-openapi.yml",
+    "brex-cost-centers-api-openapi.yml",
+    "brex-departments-api-openapi.yml",
+    "brex-legal-entities-api-openapi.yml",
+    "brex-locations-api-openapi.yml",
+    "brex-titles-api-openapi.yml",
+    "brex-users-api-openapi.yml",
     "brex-budget-programs-api-openapi.yml",
     "brex-budgets-api-openapi.yml",
     "brex-spend-limits-api-openapi.yml"
@@ -12,9 +21,11 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "sourced from openapi/_original/ (0 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "brex-openapi.yml: upgraded openapi 3.0.1 -> OpenAPI 3.2.0",
+    "brex-openapi.yml: declared missing tag: Companies",
     "brex-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "apis.yml register: already-registered"
+    "apis.yml register: written (+8 apis, 11 total)"
   ],
   "skipped": [
     "brex-budget-programs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
