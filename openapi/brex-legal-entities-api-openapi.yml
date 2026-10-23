@@ -235,3 +235,9 @@ components:
             legal_entities: View and manage legal entities
             legal_entities.readonly: View legal entities
 x-explorer-enabled: false
+x-provenance:
+  method: harvested
+  publisher: Brex
+  source: https://developer.brex.com/_bundle/openapi/team_api.yaml?download
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
